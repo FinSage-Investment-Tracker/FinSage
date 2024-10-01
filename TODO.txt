@@ -1,0 +1,17 @@
+should change the routes links in all routes
+should check the codes of all CRUD operations of all routes
+test routes
+
+today:
+CRUD on notes video and apply on our all routes
+see notes rendering video
+render all the portfolios, stocks, mfs frontend
+contextAPI video and apply
+
+yash
+yash@gmail.com
+yash
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7fSwiaWF0IjoxNzI3ODA5MjU2fQ.Gt9yM36su4tP2wmCrmDChjmZKXldjv4KkyhEPkZ7kfw
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjZmYzQ2ZThmZjFlOGE3OTZlMDZjNDZjIn0sImlhdCI6MTcyNzgwOTM3MX0.OgRL8QCWQGktSr-rvEjKxWk1a-8Xya7BNkhnbKIOCKM
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjZmYzQ2ZThmZjFlOGE3OTZlMDZjNDZjIn0sImlhdCI6MTcyNzgwOTU2MH0.1QoArLcnU-WQ1rm24mDcJ70NLAGqQGgrQe5of3Tz3g8
+auth-token ^
