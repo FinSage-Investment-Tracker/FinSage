@@ -2,7 +2,9 @@ import React from 'react'
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div className="container mt-4">
+    <h3>Home Page</h3>
+    </div>
   )
 }
 

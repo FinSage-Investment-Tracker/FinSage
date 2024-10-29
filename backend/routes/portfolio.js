@@ -4,7 +4,7 @@ const fetchuser = require('../middleware/fetchuser');
 const Portfolio = require('../models/Portfolio');
 const { body, validationResult } = require('express-validator');
 
-// ROUTE 1: Get all portfolios of the user
+// ROUTE 1: Get all portfolios of the user with associated stocks and mutual funds
 router.get('/fetchallportfolios', fetchuser, async (req, res) => {
     try {
         const portfolios = await Portfolio.find({ user: req.user.id })
@@ -18,12 +18,9 @@ router.get('/fetchallportfolios', fetchuser, async (req, res) => {
 });
 
 // ROUTE 2: Add a new portfolio
-router.post('/addportfolio', fetchuser, [
-    body('name', 'Portfolio name is required').isLength({ min: 3 }),
-    body('relationship', 'Invalid relationship').isIn(['self', 'father', 'mother', 'spouse', 'child', 'other']),
-    body('pan', 'PAN is required').isLength({ min: 1, max: 10 })
-], async (req, res) => {
+router.post('/addportfolio', fetchuser, async (req, res) => {
     try {
+
         const { name, relationship, pan } = req.body;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -83,6 +80,7 @@ router.delete('/deleteportfolio/:id', fetchuser, async (req, res) => {
         if (!portfolio) {
             return res.status(404).json({ error: 'Portfolio not found' });
         }
+
         if (portfolio.user.toString() !== req.user.id) {
             return res.status(401).json({ error: 'Access denied' });
         }

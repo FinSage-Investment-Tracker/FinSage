@@ -18,21 +18,23 @@ const PortfolioSchema = new Schema({
     },
     pan: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
-    date: {
-        type: Date,
-        default: Date.now
+    demat: {
+        type: Number
     },
     stocks: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'stocks'
+        ref: 'stock'
     }],
     mutualFunds: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'mutualfunds'
-    }]
+        ref: 'mutualfund'
+    }],
+    date: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 module.exports = mongoose.model('portfolio', PortfolioSchema);

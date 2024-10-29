@@ -53,8 +53,7 @@ router.post('/:portfolioId/addstock', fetchuser, [
         });
 
         const savedStock = await stock.save();
-        
-        // Add the stock reference to the portfolio
+
         portfolio.stocks.push(savedStock._id);
         await portfolio.save();
 
@@ -104,6 +103,7 @@ router.delete('/deletestock/:id', fetchuser, async (req, res) => {
         }
 
         await Stock.findByIdAndDelete(req.params.id);
+
         res.json({ "Success": "Stock has been deleted" });
     } catch (error) {
         console.error(error);

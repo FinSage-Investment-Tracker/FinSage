@@ -1,41 +1,41 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const StocksSchema = new Schema({
+const StockSchema = new Schema({
     portfolio: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'portfolio',
         required: true
     },
-    symbol:{
+    symbol: {
         type: String,
         required: true
     },
-    demat:{
+    demat: {
         type: Number,
         required: true
     },
-    price:{
+    price: {
         type: Number,
         required: true
     },
-    quantity:{
+    quantity: {
         type: Number,
         required: true
     },
-    date:{
-        type: Date,
-        default: Date.now
-    },
-    exchange:{
+    exchange: {
         type: String,
         required: true
     },
-    type:{
+    type: {
         type: String,
         enum: ['buy', 'sell'],
         required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
 });
 
-module.exports = mongoose.model('stocks', StocksSchema);
+module.exports = mongoose.model('stock', StockSchema);

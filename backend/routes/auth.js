@@ -15,15 +15,16 @@ router.post('/createuser', [
     body('password', 'Password must be at least 3 chars').isLength({ min: 3 })
 ] , async (req, res)=>{
 
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ success, error: errors.array() });
+        return res.status(400).json({ error: errors.array() });
     }
 
     try {
         let user = await User.findOne({ email: req.body.email });
         if (user) {
-            return res.status(400).json({ error: "Sorry a user with this email already exists" })
+            return res.status(400).json({success, error: "Sorry a user with this email already exists" })
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -38,7 +39,8 @@ router.post('/createuser', [
             user:{ id: user.id}
         }
         const authtoken = jwt.sign(data, JWT_SECRET);
-        res.json({authtoken});
+        success = true
+        res.json({success, authtoken});
     } catch (error) {
         console.log(error);
         res.status(500).json({error: 'server error'});
@@ -51,6 +53,7 @@ router.post('/login', [
     body('password', 'Password cannot be empty').exists()
 ] , async (req, res)=>{
 
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: errors.array() });
@@ -61,19 +64,20 @@ router.post('/login', [
     try {
         let user = await User.findOne({email});
         if (!user) {
-            return res.status(400).json({ error: "Please check your login credentials" })
+            return res.status(400).json({success, error: "Please check your login credentials" })
         }
 
         const passwordCompare = await bcrypt.compare(password, user.password);
         if (!passwordCompare) {
-            return res.status(400).json({ error: "Please check your login credentials" })
+            return res.status(400).json({success, error: "Please check your login credentials" })
         }
 
         const data = {
             user:{ id: user.id}
         }
         const authtoken = jwt.sign(data, JWT_SECRET);
-        res.json({authtoken});
+        success = true;
+        res.json({success, authtoken});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error' });
