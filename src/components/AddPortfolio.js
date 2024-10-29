@@ -8,9 +8,9 @@ const AddPortfolio = () => {
 
     const [portfolio, setPortfolio] = useState({name:"", relationship:"self", pan:""})
 
-    const handleClick =(e) =>{
+    const handleClick = async (e) =>{
         e.preventDefault();
-        addPortfolio(portfolio.name, portfolio.relationship, portfolio.pan);
+        await addPortfolio(portfolio.name, portfolio.relationship, portfolio.pan);
         setPortfolio({name:"", relationship:"self", pan:""})
     }
     const onChange =(e) =>{

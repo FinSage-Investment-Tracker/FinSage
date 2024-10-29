@@ -1,34 +1,41 @@
-import React, { useContext, useState } from 'react'
+// PortfolioItem.js
+import React, { useContext } from 'react';
 import { PortfolioContext } from '../context/PortfolioContext';
+import { useNavigate } from 'react-router-dom';
 
-const PortfolioItem = (props) => {
+const PortfolioItem = ({ item, updatePortfolio }) => {
     const context = useContext(PortfolioContext);
     const { deletePortfolio } = context;
-    const {item, updatePortfolio} = props;
+    const navigate = useNavigate();
 
-    const handleDeleteClick =() =>{
+    const handleDeleteClick = () => {
         deletePortfolio(item._id);
-    }
+    };
 
-  return (
-    <div className="card w-100 mb-3" style={{ padding: '15px' }}>
-            
+    const handleNameClick = () => {
+        navigate(`/portfolio/${item._id}/stocks`);
+    };
+
+    return (
+        <div className="card w-100 mb-3" style={{ padding: '15px' }}>
             <div className="d-flex justify-content-between align-items-center">
-                <div className="col">{item.name}</div>
+                <div className="col" onClick={handleNameClick} style={{ cursor: 'pointer', color: 'blue' }}>
+                    {item.name}
+                </div>
                 <div className="col">{item.relationship}</div>
                 <div className="col">{item.stocks ? item.stocks.length : 0}</div>
                 <div className="col">{item.mutualFunds ? item.mutualFunds.length : 0}</div>
                 <div className="col text-end">
                     <button className="btn btn-link p-0 me-2">
-                    <i className="fas fa-edit text-primary" onClick={()=>{updatePortfolio(item)}} ></i>
+                        <i className="fas fa-edit text-primary" onClick={() => updatePortfolio(item)}></i>
                     </button>
                     <button className="btn btn-link p-0">
-                    <i className="fas fa-trash-alt text-danger" onClick={handleDeleteClick} ></i>
+                        <i className="fas fa-trash-alt text-danger" onClick={handleDeleteClick}></i>
                     </button>
                 </div>
             </div>
         </div>
-  )
-}
+    );
+};
 
-export default PortfolioItem
+export default PortfolioItem;

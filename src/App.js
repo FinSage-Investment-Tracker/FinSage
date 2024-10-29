@@ -6,11 +6,14 @@ import PortfolioList from './components/PortfolioList';
 import { PortfolioProvider } from './context/PortfolioContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import StockList from './components/StockList';
+import { StockProvider } from './context/StockContext';
 
 function App() {
   return (
     <>
     <PortfolioProvider>
+    <StockProvider>
     <Router>
       <Navbar />
         <div className='container' >
@@ -19,9 +22,11 @@ function App() {
             <Route exact path="/portfoliolist" element={<PortfolioList/> } />
             <Route exact path="/login" element={<Login/> } />
             <Route exact path="/signup" element={<Signup/> } />
+            <Route path="/portfolio/:portfolioId/stocks" element={<StockList />} />
           </Routes>
         </div>
     </Router>
+    </StockProvider>
     </PortfolioProvider>
     </>
   );
