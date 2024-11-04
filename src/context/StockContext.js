@@ -5,6 +5,7 @@ const StockContext = createContext();
 const StockProvider = ({ children }) => {
     const host = "http://localhost:5000";
     const [stocks, setStocks] = useState([]);
+    const [stocktransactions, setStockTransactions] = useState([]);
 
     // Fetch all stocks in a portfolio
     const fetchStocks = async (portfolioId) => {
@@ -23,8 +24,25 @@ const StockProvider = ({ children }) => {
         }
     };
 
+    // Fetch all stocks in a stock Transactions
+    const fetchStocktransactions = async (portfolioId) => {
+        try {
+            const response = await fetch(`${host}/api/stocks/${portfolioId}/stocktransactions`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token'),
+                },
+            });
+            const data = await response.json();
+            setStockTransactions(data);
+        } catch (error) {
+            console.error("Failed to fetch stocks:", error);
+        }
+    };
+
     // Add a stock to a portfolio
-    const addStock = async (portfolioId, symbol, demat, price, quantity, exchange, type) => {
+    const addStock = async (portfolioId, symbol, price, quantity, type, date) => {
         try {
             const response = await fetch(`${host}/api/stocks/${portfolioId}/addstock`, {
                 method: "POST",
@@ -32,7 +50,7 @@ const StockProvider = ({ children }) => {
                     "Content-Type": "application/json",
                     "auth-token": localStorage.getItem('token'),
                 },
-                body: JSON.stringify({ symbol, demat, price, quantity, exchange, type }),
+                body: JSON.stringify({ symbol, price, quantity, type, date}),
             });
             const stock = await response.json();
             setStocks((prevStocks) => [...prevStocks, stock]);
@@ -42,43 +60,11 @@ const StockProvider = ({ children }) => {
     };
 
     // Update a stock
-    const updateStock = async (id, updatedStock) => {
-        try {
-            const response = await fetch(`${host}/api/stocks/updatestock/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": localStorage.getItem('token'),
-                },
-                body: JSON.stringify(updatedStock),
-            });
-            const stock = await response.json();
-            setStocks((prevStocks) => 
-                prevStocks.map((stk) => (stk._id === id ? stock : stk))
-            );
-        } catch (error) {
-            console.error("Failed to update stock:", error);
-        }
-    };
 
     // Delete a stock
-    const deleteStock = async (id) => {
-        try {
-            await fetch(`${host}/api/stocks/deletestock/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": localStorage.getItem('token'),
-                },
-            });
-            setStocks((prevStocks) => prevStocks.filter((stk) => stk._id !== id));
-        } catch (error) {
-            console.error("Failed to delete stock:", error);
-        }
-    };
 
     return (
-        <StockContext.Provider value={{ stocks, fetchStocks, addStock, updateStock, deleteStock }}>
+        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock}}>
             {children}
         </StockContext.Provider>
     );

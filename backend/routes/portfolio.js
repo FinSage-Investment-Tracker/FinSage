@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const fetchuser = require('../middleware/fetchuser');
 const Portfolio = require('../models/Portfolio');
+const Stock = require('../models/Stock'); // Ensure this is your Stock model
+const StockTransaction = require('../models/StockTransaction'); // Ensure this is your StockTransaction model
 const { body, validationResult } = require('express-validator');
 
 // ROUTE 1: Get all portfolios of the user with associated stocks and mutual funds
@@ -85,8 +87,15 @@ router.delete('/deleteportfolio/:id', fetchuser, async (req, res) => {
             return res.status(401).json({ error: 'Access denied' });
         }
 
+        // Delete associated stocks
+        await Stock.deleteMany({ portfolio: req.params.id });
+
+        // Delete associated stock transactions
+        await StockTransaction.deleteMany({ portfolio: req.params.id });
+
+        // Finally, delete the portfolio
         await Portfolio.findByIdAndDelete(req.params.id);
-        res.json({ "Success": "Portfolio has been deleted" });
+        res.json({ "Success": "Portfolio and associated entries have been deleted" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error' });

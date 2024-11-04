@@ -20,9 +20,6 @@ const PortfolioSchema = new Schema({
         type: String,
         required: true
     },
-    demat: {
-        type: Number
-    },
     stocks: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'stock'

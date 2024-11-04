@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+/* Navbar dropdown hover */
+.navbar-nav .dropdown:hover .dropdown-menu {
+  display: block;
+}

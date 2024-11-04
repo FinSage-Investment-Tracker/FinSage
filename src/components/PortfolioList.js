@@ -111,17 +111,26 @@ const PortfolioList = () => {
     </div>
     </div>
     <div className='container'>
-      <h3 className='my-3'>Portfolio List</h3>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-                <div className="col">Name</div>
-                <div className="col">Relationship</div>
-                <div className="col">Stocks</div>
-                <div className="col">MF</div>
-                <div className="col text-end">Actions</div>
+    <h3 className='my-3'>Portfolio List</h3>
+    {portfolios.length === 0 ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '100px' }}>
+            <h3 className="text-muted">No Portfolios Added</h3>
         </div>
-      {portfolios.map((item)=>{
-        return <PortfolioItem key={item._id} item={item} updatePortfolio={updatePortfolio} />
-      })}
+    ) : (
+        <>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+                    <div className="col">Name</div>
+                    <div className="col">Relationship</div>
+                    <div className="col">Stocks</div>
+                    <div className="col">MF</div>
+                    <div className="col text-end">Actions</div>
+            </div>
+        {portfolios.map((item)=>{
+            return <PortfolioItem key={item._id} item={item} updatePortfolio={updatePortfolio} />
+        })}
+        </>
+    )}
+
     </div>
     <AddPortfolio/>
     </>
