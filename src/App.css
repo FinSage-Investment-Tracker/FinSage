@@ -41,3 +41,8 @@
 .navbar-nav .dropdown:hover .dropdown-menu {
   display: block;
 }
+
+/* Hides scrollbar in Chrome, Safari, and Edge */
+body::-webkit-scrollbar {
+  display: none;
+}

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const MfSchema = new Schema({
+const MfTransactionSchema = new Schema({
     portfolio: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'portfolio',
@@ -18,7 +18,16 @@ const MfSchema = new Schema({
     invested: {
         type: Number,
         required: true
+    },
+    type: {
+        type: String,
+        enum: ['buy', 'sell'],
+        required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
 });
 
-module.exports = mongoose.model('mutualfund', MfSchema);
+module.exports = mongoose.model('mftransaction', MfTransactionSchema);

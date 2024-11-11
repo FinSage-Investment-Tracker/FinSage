@@ -1,24 +1,32 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const MfSchema = new Schema({
+const FixedDepositSchema = new Schema({
     portfolio: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'portfolio',
         required: true
     },
-    symbol: {
+    name: {
         type: String,
         required: true
     },
-    nav: {
+    bank: {
+        type: String,
+        required: true
+    },
+    interest: {
         type: Number,
         required: true
     },
-    invested: {
+    amount: {
+        type: Number,
+        required: true
+    },
+    duration: {
         type: Number,
         required: true
     }
 });
 
-module.exports = mongoose.model('mutualfund', MfSchema);
+module.exports = mongoose.model('fixed deposit', FixedDepositSchema);

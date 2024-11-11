@@ -13,7 +13,7 @@ const PortfolioItem = ({ item, updatePortfolio }) => {
     };
 
     const handleNameClick = () => {
-        navigate(`/portfolio/${item._id}/stocks`);
+        navigate(`/portfolio/${item._id}`);
     };
 
     return (

@@ -1,25 +1,26 @@
-import React from 'react'
-import { Link } from "react-router-dom";
+// PortfolioTabs.js
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const PortfolioTabs = () => {
-  return (
-    <>
-        <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <Link class="nav-link active" aria-current="page" to="#" >Stocks</Link> 
-        </li>
-        <li class="nav-item">
-            <Link class="nav-link" to="#" >mf</Link> 
-        </li>
-        <li class="nav-item">
-            <Link class="nav-link" to="#" >Fixed Deposit</Link> 
-        </li>
-        <li class="nav-item">
-            <Link class="nav-link" aria-disabled="true" to="#" >Gold</Link> 
-        </li>
-        </ul>
-    </>
-  )
-}
+  const location = useLocation();
 
-export default PortfolioTabs
+  return (
+    <ul className="nav nav-tabs">
+      <li className="nav-item">
+        <Link className={`nav-link ${location.pathname.includes('/stocks') ? 'active' : ''}`} to="stocks">Stocks</Link>
+      </li>
+      <li className="nav-item">
+        <Link className={`nav-link ${location.pathname.includes('/mutualfunds') ? 'active' : ''}`} to="mutualfunds">Mutual Funds</Link>
+      </li>
+      <li className="nav-item">
+        <Link className={`nav-link ${location.pathname.includes('/fixeddeposit') ? 'active' : ''}`} to="fixeddeposit">Fixed Deposit</Link>
+      </li>
+      <li className="nav-item">
+        <Link className={`nav-link ${location.pathname.includes('/gold') ? 'active' : ''}`} to="gold">Gold</Link>
+      </li>
+    </ul>
+  );
+};
+
+export default PortfolioTabs;

@@ -22,7 +22,7 @@ router.get('/:portfolioId/stocks', fetchuser, async (req, res) => {
     }
 });
 
-// ROUTE 1: Get all stocks in a Transactions
+// ROUTE 2: Get all stocks in a Transactions
 router.get('/:portfolioId/stocktransactions', fetchuser, async (req, res) => {
     try {
         const portfolio = await Portfolio.findOne({ _id: req.params.portfolioId, user: req.user.id });
@@ -38,7 +38,7 @@ router.get('/:portfolioId/stocktransactions', fetchuser, async (req, res) => {
     }
 });
 
-// ROUTE 2: Add a stock to a portfolio (Buy/Sell Stock)
+// ROUTE 3: Add a stock to a portfolio (Buy/Sell Stock)
 router.post('/:portfolioId/addstock', fetchuser, [
     body('symbol', 'Symbol is required').isLength({ min: 3 }),
     body('price', 'Price is required').isNumeric(),
@@ -65,7 +65,6 @@ router.post('/:portfolioId/addstock', fetchuser, [
             type,
             date
         });
-        await stocktransaction.save();
 
         let stock = await Stock.findOne({ portfolio: req.params.portfolioId, symbol });
         if (stock) {
@@ -91,7 +90,8 @@ router.post('/:portfolioId/addstock', fetchuser, [
                     await portfolio.save();
                 }
             }
-        
+            
+            await stocktransaction.save();
             await stock.save();
         } else if (type === 'sell') {
             return res.status(400).json({ error: 'Cannot sell a stock that is not in holdings' });
@@ -106,10 +106,12 @@ router.post('/:portfolioId/addstock', fetchuser, [
             });
             await stock.save();
         }
+        
 
+        await stocktransaction.save();
         const savedStock = await stock.save();
         portfolio.stocks.push(savedStock._id);
-        await portfolio.save();     
+        await portfolio.save();
 
         res.json(savedStock);
     } catch (error) {

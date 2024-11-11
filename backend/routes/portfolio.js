@@ -6,6 +6,7 @@ const Stock = require('../models/Stock'); // Ensure this is your Stock model
 const StockTransaction = require('../models/StockTransaction'); // Ensure this is your StockTransaction model
 const { body, validationResult } = require('express-validator');
 
+
 // ROUTE 1: Get all portfolios of the user with associated stocks and mutual funds
 router.get('/fetchallportfolios', fetchuser, async (req, res) => {
     try {

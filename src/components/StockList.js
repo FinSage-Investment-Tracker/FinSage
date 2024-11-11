@@ -4,6 +4,9 @@ import { StockContext } from '../context/StockContext';
 import StockItem from './StockItem'; // Import StockItem component
 import AddStock from './AddStock'; // Import AddStock component
 import StockTransactions from './StockTransactions';
+// eslint-disable-next-line
+import StockChart from './StockChart';
+import StockPieChart from './StockPieChart';
 
 const StockList = () => {
     const { portfolioId } = useParams();
@@ -27,13 +30,28 @@ const StockList = () => {
         setStock({...stock, [e.target.name]:e.target.value})
     }
 
-    //section for selling
+    //section for selling price logic
     const handleClick = async (e) =>{
         e.preventDefault();
-        await addStock(portfolioId, stock.symbol, stock.price, stock.quantity, stock.type, stock.date);
-        refClose.current.click();
-        fetchStocks(portfolioId);
-        fetchStocktransactions(portfolioId);
+        const API_KEY = "66f3115d0f1214.40427570"; // Add your API key here
+        const url = `https://eodhd.com/api/eod/${stock.symbol}.nse?from=${stock.date}&to=${stock.date}&period=d&api_token=${API_KEY}&fmt=json`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const high = data[0].high;
+            const low = data[0].low;
+            if (stock.price < high && stock.price > low) {
+                await addStock(portfolioId, stock.symbol, stock.price, stock.quantity, stock.type, stock.date);
+                refClose.current.click();
+                fetchStocks(portfolioId);
+                fetchStocktransactions(portfolioId);
+            } else {
+                alert(`Price should be between ${low} and ${high}`);
+            }
+        } catch (error) {
+            alert(`Error: ${error.message}, check the stock symbol`);
+        }
     }
 
     const sellStock = (currentStock) =>{
@@ -110,7 +128,7 @@ const StockList = () => {
         </div>
 
         <div className='container'>
-        <h3 className='my-3'>Stock Holdings</h3>
+        <h3 className='my-3'>Holdings</h3>
         {stocks.length === 0 ? (
             <div className="d-flex justify-content-center align-items-center" style={{ height: '100px' }}>
                 <h3 className="text-muted">No Current Holdings</h3>
@@ -121,6 +139,10 @@ const StockList = () => {
                             <div className="col">Symbol</div>
                             <div className="col">Qty</div>
                             <div className="col">Average Price</div>
+                            <div className="col">Current Price</div>
+                            <div className="col">Invested</div>
+                            <div className="col">Current</div>
+                            <div className="col">Returns</div>
                         </div>
                         {stocks.map((stock) => (
                             <StockItem key={stock._id} stock={stock} sellStock={sellStock} />
@@ -130,6 +152,14 @@ const StockList = () => {
         </div>
 
         <AddStock />
+        <div className="row">
+            <div className="col-md-6">
+                <StockPieChart />
+            </div>
+            <div className="col-md-6">
+                <StockPieChart />
+            </div>
+        </div>
 
         <StockTransactions/>
 

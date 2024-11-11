@@ -2,9 +2,11 @@ import React from 'react';
 import { StocksProvider } from './StocksContext';
 import { MFProvider } from './MfContext';
 import { PortfolioProvider } from './PortfolioContext';
+import { FDProvider } from './FDContext';
 
 const GlobalProvider = ({ children }) => {
     return (
+        <FDProvider>
         <StocksProvider>
             <MFProvider>
                 <PortfolioProvider>
@@ -12,6 +14,7 @@ const GlobalProvider = ({ children }) => {
                 </PortfolioProvider>
             </MFProvider>
         </StocksProvider>
+        </FDProvider>
     );
 };
 

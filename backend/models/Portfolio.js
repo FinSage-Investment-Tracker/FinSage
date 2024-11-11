@@ -28,6 +28,10 @@ const PortfolioSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'mutualfund'
     }],
+    fixedDeposits: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'fixed deposit'
+    }],
     date: {
         type: Date,
         default: Date.now

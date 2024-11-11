@@ -1,6 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const StockItem = ({ stock, sellStock }) => {
+    const [todayPrice, setTodayPrice] = useState(null);
+
+    const getPrice = async () => {
+        // VW453IKM1V01L7RE
+        // FNJ80BLVZPE52HW3
+        const API_KEY = "";
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock.symbol}.BSE&outputsize=full&apikey=${API_KEY}`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const timeSeries = data["Time Series (Daily)"];
+            const latestDate = Object.keys(timeSeries)[0];
+            const today_price = parseFloat(timeSeries[latestDate]["4. close"]);
+            setTodayPrice(today_price);
+        } catch (error) {
+            console.error("Error fetching stock price:", error);
+        }
+    };
+
+    useEffect(() => {
+        getPrice();
+        // eslint-disable-next-line
+    }, []);
+
+    const invested = stock.price * stock.quantity;
+    const current = todayPrice ? todayPrice * stock.quantity : 0;
+    const returns_change = invested ? ((current - invested) / invested) * 100 : 0;
 
     return (
         <>
@@ -9,7 +37,11 @@ const StockItem = ({ stock, sellStock }) => {
                 <div className="col">{stock.symbol}</div>
                 <div className="col">{stock.quantity}</div>
                 <div className="col">{stock.price}</div>
-                <button type="button" class="btn btn-danger" onClick={() => sellStock(stock)} >Sell</button>
+                <div className="col">{todayPrice}</div>
+                <div className="col">{invested}</div>
+                <div className="col" style={{ color: current >= invested ? 'green' : 'red', fontWeight: 'bold' }}>{current}</div>
+                <div className="col" style={{ color: returns_change > 0 ? 'green' : 'red', fontWeight: 'bold' }}>{returns_change.toFixed(2)}%</div>
+                <button type="button" className="btn btn-danger" onClick={() => sellStock(stock)} >Sell</button>
             </div>
         </div>
         </>
