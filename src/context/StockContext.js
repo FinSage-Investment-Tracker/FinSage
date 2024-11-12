@@ -6,6 +6,7 @@ const StockProvider = ({ children }) => {
     const host = "http://localhost:5000";
     const [stocks, setStocks] = useState([]);
     const [stocktransactions, setStockTransactions] = useState([]);
+    const [sips, setSips] = useState([]);
 
     // Fetch all stocks in a portfolio
     const fetchStocks = async (portfolioId) => {
@@ -59,12 +60,62 @@ const StockProvider = ({ children }) => {
         }
     };
 
+    // fetch active sips
+    const fetchSips = async (portfolioId) => {
+        try {
+            const response = await fetch(`${host}/api/sips/${portfolioId}/sips`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token'),
+                },
+            });
+            const data = await response.json();
+            setSips(data);
+        } catch (error) {
+            console.error("Failed to fetch SIPs:", error);
+        }
+    };
+
+    // Add a stock to a portfolio
+    const addSip = async (portfolioId, symbol, quantity, startDate, endDate) => {
+        try {
+            const response = await fetch(`${host}/api/sips/${portfolioId}/start`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token'),
+                },
+                body: JSON.stringify({ symbol, quantity, startDate, endDate}),
+            });
+            const data = await response.json();
+            setSips((prev) => [...prev, data]);
+        } catch (error) {
+            console.error("Failed to add stock:", error);
+        }
+    };
+
+    // Break or delete SIP
+    const deleteSip = async (id) =>{
+        const response = await fetch(`${host}/api/sips/deletesip/${id}`, {
+          method: "DELETE",
+          headers: {
+              "Content-Type": "application/json",
+              "auth-token": localStorage.getItem('token')
+          }
+        });
+        // eslint-disable-next-line
+        const json = await response.json();
+  
+        setSips(sips.filter(item => item._id !== id));
+      }
+
     // Update a stock
 
     // Delete a stock
 
     return (
-        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock}}>
+        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip}}>
             {children}
         </StockContext.Provider>
     );

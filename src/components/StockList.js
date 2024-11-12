@@ -7,6 +7,8 @@ import StockTransactions from './StockTransactions';
 // eslint-disable-next-line
 import StockChart from './StockChart';
 import StockPieChart from './StockPieChart';
+import SipList from './sip/SipList';
+import AddSip from './sip/AddSip';
 
 const StockList = () => {
     const { portfolioId } = useParams();
@@ -151,7 +153,10 @@ const StockList = () => {
                 )}
         </div>
 
+        <SipList />
+
         <AddStock />
+        <AddSip />
         <div className="row">
             <div className="col-md-6">
                 <StockPieChart />
