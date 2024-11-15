@@ -54,6 +54,7 @@ const AddSip = () => {
                 />
             </div>
             <div className="mb-3">
+            <label htmlFor="startDate" className="form-label">Start Date</label>
                     <input
                         type="date"
                         name="startDate"
@@ -63,6 +64,7 @@ const AddSip = () => {
                         required/>
             </div>
             <div className="mb-3">
+            <label htmlFor="endDate" className="form-label">End Date (remain empty if active)</label>
                     <input
                         type="date"
                         name="endDate"

@@ -2,6 +2,7 @@ const connectToMongo = require('./db');
 const express = require('express');
 var cors = require('cors');
 const { populateStockSymbols } = require('./populateStockSymbols');
+const getStockNews = require('./routes/stockNewsScrapper')
 
 const cron = require('node-cron');
 
@@ -21,8 +22,21 @@ app.use('/api/mutualfunds', require('./routes/mutualfunds'))
 app.use('/api/fixeddeposit', require('./routes/fixeddeposit'))
 app.use('/api/charts', require('./routes/charts'))
 app.use('/api/stocksymbol', require('./routes/StockSymbols'))
+app.use('/api/news', require('./routes/news'))
+app.get('/api/stock-news', async (req, res) => {
+    const company = req.query.company; // Get company name from query or default to "Tata Steel"
+    try {
+      const news = await getStockNews(company); // Pass company to the scraper
+      res.json(news);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching news', error });
+    }
+  });
+
+app.use('/api/alerts', require('./routes/alert'))
 
 require('./services/sipScheduler');
+require('./services/alertChecker');
 
 
 // populateStockSymbols();

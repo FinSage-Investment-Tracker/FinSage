@@ -1,5 +1,5 @@
 async function fetchStockPrice(symbol, formattedDate) {
-    const API_KEY = ""; // Add your API key here 66f3115d0f1214.40427570
+    const API_KEY = process.env.EODHD; // Add your API key here 66f3115d0f1214.40427570
     const url = `https://eodhd.com/api/eod/${symbol}.nse?from=${formattedDate}&to=${formattedDate}&period=d&api_token=${API_KEY}&fmt=json`;
     try {
         // const response = await fetch(url);

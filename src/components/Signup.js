@@ -3,8 +3,28 @@ import { useNavigate, Link} from 'react-router-dom'
 
 const Signup = () => {
 
-  const [credentials, setCredentials] = useState({name:"", email: "", password: "", cpassword: ""})
+  const [credentials, setCredentials] = useState({name:"", email: "", password: "", cpassword: "", code:""});
+  const [showCode, setShowCode] = useState(false);
   let navigate = useNavigate();
+
+  const sendCode = async (e) =>{
+    const host = "http://localhost:5000";
+    e.preventDefault();
+    const response = await fetch(`${host}/api/auth/sendotp`, {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email: credentials.email})
+    });
+    const json = await response.json();
+    if(json.success){
+      // allow to take otp
+      setShowCode(true);
+    } else{
+      // didn't sent code
+    }
+  }
 
   const handleSubmit = async (e) =>{
     const host = "http://localhost:5000";
@@ -14,7 +34,7 @@ const Signup = () => {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ name: credentials.name, email: credentials.email, password: credentials.password })
+        body: JSON.stringify({ name: credentials.name, email: credentials.email, password: credentials.password , code:credentials.code })
       });
         const json = await response.json();
         // console.log(json);
@@ -35,7 +55,7 @@ const Signup = () => {
   return (
     <div className='container col-md-4 mx-auto mb-5 mt-3'>
     <h2>Signup</h2>
-        <form onSubmit={handleSubmit} >
+        <form className={`${!showCode ? '' : 'd-none'}`} onSubmit={sendCode} >
             <div className="mb-3">
                 <label htmlFor="name" className="form-label">Name</label>
                 <input type="text" className="form-control" id="name" name='name' aria-describedby="emailHelp" onChange={onChange} />
@@ -51,6 +71,13 @@ const Signup = () => {
             <div className="mb-3">
                 <label htmlFor="cpassword" className="form-label">Confirm Password</label>
                 <input type="password" className="form-control" id="cpassword" name='cpassword' onChange={onChange} required/>
+            </div>
+            <button type="submit" className="btn btn-primary">Submit</button>
+        </form>
+        <form className={`${showCode ? '' : 'd-none'}`} onSubmit={handleSubmit} >
+            <div className='mb-3'>
+                <label htmlFor="code" className="form-label">Enter the 6-digit code sent to your mail</label>
+                <input type="password" className="form-control" id="code" name='code' onChange={onChange} />
             </div>
             <button type="submit" className="btn btn-primary">Submit</button>
         </form>

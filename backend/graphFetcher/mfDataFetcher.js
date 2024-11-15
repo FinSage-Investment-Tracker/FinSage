@@ -7,7 +7,7 @@ const duration = 12;
 async function fetchMFData(symbol, fromDate, toDate) {
     //66e9e5a7c52aa6.43032743
     //6729f2d7d26559.77635622
-    const apiKey = '';
+    const apiKey = process.env.EODHD;
     const url = `https://eodhd.com/api/eod/${symbol}.NSE?from=${fromDate}&to=${toDate}&period=w&api_token=${apiKey}&fmt=json`;
 
     try {

@@ -54,6 +54,7 @@ const StockProvider = ({ children }) => {
                 body: JSON.stringify({ symbol, price, quantity, type, date}),
             });
             const stock = await response.json();
+            console.log(process.env.REACT_APP_API_KEY)
             setStocks((prevStocks) => [...prevStocks, stock]);
         } catch (error) {
             console.error("Failed to add stock:", error);
@@ -110,12 +111,33 @@ const StockProvider = ({ children }) => {
         setSips(sips.filter(item => item._id !== id));
       }
 
+    const setAlert = async (symbol, alertPrice) =>{
+        try {
+            const response = await fetch(`${host}/api/alerts/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token'),
+                },
+                body: JSON.stringify({ symbol, alertPrice }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert("Alert set successfully!");
+            } else {
+                alert(data.error || "Error setting alert");
+            }
+        } catch (error) {
+            console.error("Error setting alert:", error.message);
+        }
+    }
+
     // Update a stock
 
     // Delete a stock
 
     return (
-        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip}}>
+        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, setAlert}}>
             {children}
         </StockContext.Provider>
     );

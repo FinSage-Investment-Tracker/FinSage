@@ -6,17 +6,24 @@ import AddStock from './AddStock'; // Import AddStock component
 import StockTransactions from './StockTransactions';
 // eslint-disable-next-line
 import StockChart from './StockChart';
-import StockPieChart from './StockPieChart';
+// import StockPieChart from './StockPieChart';
 import SipList from './sip/SipList';
 import AddSip from './sip/AddSip';
+import StockNews from './StockNews';
+import Spinner from './Spinner';
 
 const StockList = () => {
     const { portfolioId } = useParams();
-    const {stocks, addStock, fetchStocks, fetchStocktransactions } = useContext(StockContext);
+    const {stocks, addStock, fetchStocks, fetchStocktransactions, setAlert } = useContext(StockContext);
     const navigate = useNavigate();
     const [stock, setStock] = useState({ id:"", symbol: "", price: "", quantity: "", type: "sell", date:""});
     const ref = useRef(null);
     const refClose = useRef(null);
+    const ref2 = useRef(null);
+    const refClose2 = useRef(null);
+    const [selectedStock, setSelectedStock] = useState(""); // State for dropdown selection
+    const [loading, setLoading] = useState(false);
+    const [alertData, setAlertData] = useState({ symbol: "", alertPrice: "" });
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
@@ -61,12 +68,42 @@ const StockList = () => {
         setStock({id:currentStock._id, symbol: currentStock.symbol, price: "", quantity: currentStock.quantity, type: "sell", date: ""})
     }
 
+    const handleStockSelect = (symbol) => {
+        setSelectedStock(symbol);
+        setLoading(true); // Show spinner while loading
+        setTimeout(() => setLoading(false), 1000); // Simulate fetch delay
+    };
+
+    const handleAlertChange = (e) => {
+        setAlertData({ ...alertData, [e.target.name]: e.target.value });
+    };
+
+    const submitAlert = async (e) => {
+        e.preventDefault();
+        console.log(alertData)
+        try {
+            await setAlert(alertData.symbol, alertData.alertPrice); // Use the context function
+            refClose2.current.click();
+        } catch (error) {
+            console.error("Error in submitAlert:", error.message);
+        }
+    };
+
+    const openAlertModal = (stock) => {
+        setAlertData({ symbol: stock.symbol, alertPrice: "" });
+        ref2.current.click();
+    };
+
 
     return (
         <div className="container mt-3">
 
         <button ref={ref} type="button" className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#editStockModal">
-            Launch demo modal
+            Sell {stock.symbol}
+        </button>
+
+        <button ref={ref2} type="button" className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#alertStockModal">
+            Set Alert for {stock.symbol}
         </button>
 
         <div className="modal fade" id="editStockModal" tabIndex="-1" aria-labelledby="editStockModalLabel" aria-hidden="true">
@@ -129,6 +166,37 @@ const StockList = () => {
             </div>
         </div>
 
+        <div className="modal fade" id="alertStockModal" tabIndex="-1" aria-labelledby="alertStockModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="alertStockModalLabel">Set Alert for {stock.symbol}</h1>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                    <form onSubmit={submitAlert}>
+                    <div className="mb-3">
+                                    <label htmlFor="alertPrice" className="form-label">Alert Price</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        id="alertPrice"
+                                        name="alertPrice"
+                                        value={alertData.alertPrice}
+                                        onChange={handleAlertChange}
+                                        required
+                                    />
+                                </div>
+                        <div className="modal-footer">
+                            <button ref={refClose2} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" className="btn btn-primary">Set Alert</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+
         <div className='container'>
         <h3 className='my-3'>Holdings</h3>
         {stocks.length === 0 ? (
@@ -145,9 +213,10 @@ const StockList = () => {
                             <div className="col">Invested</div>
                             <div className="col">Current</div>
                             <div className="col">Returns</div>
+                            <div className="col">Actions</div>
                         </div>
                         {stocks.map((stock) => (
-                            <StockItem key={stock._id} stock={stock} sellStock={sellStock} />
+                            <StockItem key={stock._id} stock={stock} sellStock={sellStock} openAlertModal={openAlertModal} />
                         ))}
                     </>
                 )}
@@ -157,16 +226,45 @@ const StockList = () => {
 
         <AddStock />
         <AddSip />
-        <div className="row">
+        {/* <div className="row">
             <div className="col-md-6">
                 <StockPieChart />
             </div>
             <div className="col-md-6">
                 <StockPieChart />
             </div>
-        </div>
+        </div> */}
 
         <StockTransactions/>
+
+        {/* Dropdown Section */}
+        <div className="dropdown">
+            <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {selectedStock ? selectedStock : "select stock"}
+            </button>
+            <ul className="dropdown-menu">
+                {stocks.length > 0 ? (
+                    stocks.map((item) => (
+                        <li key={item._id}>
+                            <button
+                                className="dropdown-item"
+                                onClick={() => handleStockSelect(item.symbol)}
+                            >
+                                {item.symbol}
+                            </button>
+                        </li>
+                    ))
+                ) : (
+                    <li>
+                        <span className="dropdown-item text-muted">No Stocks</span>
+                    </li>
+                )}
+            </ul>
+        </div>
+
+        {/* Stock News Section */}
+        {loading ? <Spinner /> : <StockNews company={selectedStock} />}
+
 
     </div>
     );

@@ -6,6 +6,49 @@ const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const JWT_SECRET = 'putyourmoneytowork';
 var fetchuser = require('../middleware/fetchuser');
+const nodemailer = require('nodemailer');
+const Verification = require('../models/Verification');
+
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.MAIL,
+        pass: process.env.PASS,
+    },
+});
+
+// send otp
+router.post('/sendotp', async (req, res) => {
+    let success = false;
+    const { email } = req.body;
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const mailOptions = {
+        from: '"CapitaWise" <no-reply@gmail.com>',
+        to: email,
+        subject: 'CapitaWise Email Verification Code',
+        text: `Your verification code is: ${code}`,
+    }
+
+    try {
+        let user = await User.findOne({ email: email });
+        if (user) {
+            return res.status(400).json({success, error: "Sorry a user with this email already exists" })
+        }
+        const verify = Verification({
+            email,
+            code
+        })
+        await verify.save();
+        await transporter.sendMail(mailOptions);
+        success = true
+        res.json({ success });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ message: 'Error sending email' });
+    }
+});
 
 
 //CREATE user
@@ -15,6 +58,8 @@ router.post('/createuser', [
     body('password', 'Password must be at least 3 chars').isLength({ min: 3 })
 ] , async (req, res)=>{
 
+    const { name, email, password, code } = req.body;
+
     let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -22,16 +67,27 @@ router.post('/createuser', [
     }
 
     try {
-        let user = await User.findOne({ email: req.body.email });
+        let user = await User.findOne({ email: email });
         if (user) {
             return res.status(400).json({success, error: "Sorry a user with this email already exists" })
         }
 
+        const verificationEntry = await Verification.findOne({ email: email });
+        if (!verificationEntry) {
+            return res.status(400).json({ success, error: "Verification code not found for this email" });
+        }
+        // Compare the codes
+        if (verificationEntry.code !== code) {
+            console.log("Verification failed: Codes do not match");
+            return res.status(400).json({ success, error: "Invalid verification code" });
+        }
+        await Verification.deleteOne({ email: email });
+
         const salt = await bcrypt.genSalt(10);
-        const secPass = await bcrypt.hash(req.body.password, salt);
+        const secPass = await bcrypt.hash(password, salt);
         user = User.create({
-            name: req.body.name,
-            email: req.body.email,
+            name: name,
+            email: email,
             password: secPass
         })
 

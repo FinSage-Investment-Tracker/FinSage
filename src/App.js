@@ -15,6 +15,7 @@ import FixedDepositList from './components/fixeddeposit/FixedDepositList';
 import GoldList from './components/gold/GoldList';
 import { FDProvider } from './context/FDContext';
 import IpoList from './components/ipo/IpoList';
+import News from './components/News';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
             <Route exact path="/signup" element={<Signup/> } />
             <Route exact path="/portfoliolist" element={<PortfolioList/> } />
             <Route exact path="/ipo" element={<IpoList/> } />
+            <Route exact path="/news" element={<News/> } />
             {/* nested tabs */}
             <Route path="/portfolio/:portfolioId" element={<PortfolioLayout />} >
             <Route path="stocks" element={<StockList />} />
