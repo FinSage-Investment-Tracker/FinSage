@@ -11,14 +11,18 @@ const PortfolioTabs = () => {
         <Link className={`nav-link ${location.pathname.includes('/stocks') ? 'active' : ''}`} to="stocks">Stocks</Link>
       </li>
       <li className="nav-item">
-        <Link className={`nav-link ${location.pathname.includes('/mutualfunds') ? 'active' : ''}`} to="mutualfunds">Mutual Funds</Link>
+        <Link className={`nav-link ${location.pathname.includes('/mutualfunds') ? 'active' : ''}`} to="mutualfunds">ETF & MF</Link>
+      </li>
+      <li className="nav-item">
+        <Link className={`nav-link ${location.pathname.includes('/sip') ? 'active' : ''}`} to="sip">SIP</Link>
+      </li>
+      <li className="nav-item">
+        <Link className={`nav-link ${location.pathname.includes('/gold') ? 'active' : ''}`} to="gold">Commodities</Link>
       </li>
       <li className="nav-item">
         <Link className={`nav-link ${location.pathname.includes('/fixeddeposit') ? 'active' : ''}`} to="fixeddeposit">Fixed Deposit</Link>
       </li>
-      <li className="nav-item">
-        <Link className={`nav-link ${location.pathname.includes('/gold') ? 'active' : ''}`} to="gold">Gold</Link>
-      </li>
+      
     </ul>
   );
 };

@@ -5,6 +5,7 @@ const { populateStockSymbols } = require('./populateStockSymbols');
 const getStockNews = require('./routes/stockNewsScrapper')
 
 const cron = require('node-cron');
+const { populateMFSymbols } = require('./populateMfSymbols');
 
 connectToMongo();
 
@@ -17,11 +18,13 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/portfolio', require('./routes/portfolio'))
 app.use('/api/stocks', require('./routes/stocks'))
+app.use('/api/gold', require('./routes/gold'))
 app.use('/api/sips', require('./routes/sip'))
 app.use('/api/mutualfunds', require('./routes/mutualfunds'))
 app.use('/api/fixeddeposit', require('./routes/fixeddeposit'))
 app.use('/api/charts', require('./routes/charts'))
 app.use('/api/stocksymbol', require('./routes/StockSymbols'))
+app.use('/api/mfsymbol', require('./routes/MfSymbols'))
 app.use('/api/news', require('./routes/news'))
 app.get('/api/stock-news', async (req, res) => {
     const company = req.query.company; // Get company name from query or default to "Tata Steel"
@@ -40,7 +43,7 @@ require('./services/alertChecker');
 
 
 // populateStockSymbols();
-
+// populateMFSymbols();
 
 
 

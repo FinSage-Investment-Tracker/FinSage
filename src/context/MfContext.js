@@ -43,7 +43,7 @@ const MFProvider = ({ children }) => {
     };
 
     // add a mutual fund
-    const addMutualFund = async (portfolioId, symbol, nav, invested, type, date) => {
+    const addMutualFund = async (portfolioId, symbol, nav, units, type, date) => {
         try {
             const response = await fetch(`${host}/api/mutualfunds/${portfolioId}/addmutualfund`, {
                 method: 'POST',
@@ -51,7 +51,7 @@ const MFProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                     'auth-token': localStorage.getItem('token'), // Include auth-token from local storage
                 },
-                body: JSON.stringify({ symbol, nav, invested, type, date }),
+                body: JSON.stringify({ symbol, nav, units, type, date }),
             });
 
             const data = await response.json();

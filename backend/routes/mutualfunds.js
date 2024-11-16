@@ -43,10 +43,10 @@ router.get('/:portfolioId/mftransactions', fetchuser, async (req, res) => {
 router.post('/:portfolioId/addmutualfund', fetchuser, [
     body('symbol', 'Symbol is required').isLength({ min: 3 }),
     body('nav', 'NAV is required').isNumeric(),
-    body('invested', 'Units are required').isNumeric()
+    body('units', 'Units are required').isNumeric()
 ], async (req, res) => {
     try {
-        const { symbol, nav, invested, type, date } = req.body;
+        const { symbol, nav, units, type, date } = req.body;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -61,7 +61,7 @@ router.post('/:portfolioId/addmutualfund', fetchuser, [
             portfolio: req.params.portfolioId,
             symbol,
             nav,
-            invested,
+            units,
             type,
             date
         });
@@ -71,18 +71,18 @@ router.post('/:portfolioId/addmutualfund', fetchuser, [
         let mf = await MutualFund.findOne({ portfolio: req.params.portfolioId, symbol });
         if (mf) {
             if (type === 'buy') {
-                const total_invested = Number(mf.invested) + Number(invested);
-                const total_units = (Number(mf.invested)/mf.nav) + (Number(invested)/nav);
-                mf.invested = total_invested;
-                mf.nav = total_invested/ total_units;
+                const total_amount = (Number(mf.nav) * Number(mf.units)) + (Number(nav) * Number(units));
+                const total_quantity = Number(mf.units) + Number(units);
+                mf.nav = total_amount / total_quantity;
+                mf.units = total_quantity;
             } else if (type === 'sell') {
-                if (mf.invested < invested) {
-                    return res.status(400).json({ error: 'Insufficient investment amount to sell' });
+                if (mf.units < units) {
+                    return res.status(400).json({ error: 'Insufficient units to sell' });
                 }
                 
-                mf.invested -= invested;
+                mf.units -= units;
         
-                if (mf.invested > 0) {
+                if (mf.units > 0) {
                     // Recalculate average NAV only if there is remaining investment
                     // mf.nav = mf.invested / (mf.invested / nav);
                     // await mf.save();
@@ -105,7 +105,7 @@ router.post('/:portfolioId/addmutualfund', fetchuser, [
                 portfolio: req.params.portfolioId,
                 symbol,
                 nav,
-                invested
+                units
             });
             await mf.save();
         }

@@ -1,8 +1,8 @@
 const { default: axios } = require('axios');
-const StockSymbol = require('./models/StockSymbols');
+const MFSymbol = require('./models/MfSymbols');
 
 // Define the function to populate stock symbols
-const populateStockSymbols = async () => {
+const populateMFSymbols = async () => {
     console.log('Populate stock symbols function called');  // To confirm if function is being triggered
     try {
         // Fetch stock symbols from the API
@@ -10,7 +10,7 @@ const populateStockSymbols = async () => {
 
         // Extract symbols and names
         const symbols = response.data
-            .filter(stock => stock.Code && stock.Name && stock.Type=="Common Stock")  // Ensure both Code and Name are present
+            .filter(stock => stock.Code && stock.Name && (stock.Type=="ETF" || stock.Type=="FUND"))  // Ensure both Code and Name are present
             .map(stock => ({ 
                 symbol: stock.Code, 
                 name: stock.Name  // Adding the name field
@@ -20,11 +20,11 @@ const populateStockSymbols = async () => {
         console.log('Inserting the following symbols:', symbols);
 
         // Insert symbols into the database
-        const result = await StockSymbol.insertMany(symbols);
+        const result = await MFSymbol.insertMany(symbols);
         console.log('Stock symbols inserted successfully:', result);  // Log the result to verify insertion
     } catch (error) {
         console.error('Error inserting stock symbols:', error);  // Log any errors during insert
     }
 };
 
-module.exports = { populateStockSymbols };
+module.exports = { populateMFSymbols };

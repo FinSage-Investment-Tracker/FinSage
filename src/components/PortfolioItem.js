@@ -19,9 +19,7 @@ const PortfolioItem = ({ item, updatePortfolio }) => {
     return (
         <div className="card w-100 mb-3" style={{ padding: '15px' }}>
             <div className="d-flex justify-content-between align-items-center">
-                <div className="col" onClick={handleNameClick} style={{ cursor: 'pointer', color: 'blue' }}>
-                    {item.name}
-                </div>
+                <div className="col" onClick={handleNameClick} style={{ cursor: 'pointer', color: 'blue' }}>{item.name}</div>
                 <div className="col">{item.relationship}</div>
                 <div className="col">{item.stocks ? item.stocks.length : 0}</div>
                 <div className="col">{item.mutualFunds ? item.mutualFunds.length : 0}</div>

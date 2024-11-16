@@ -7,6 +7,7 @@ const StockProvider = ({ children }) => {
     const [stocks, setStocks] = useState([]);
     const [stocktransactions, setStockTransactions] = useState([]);
     const [sips, setSips] = useState([]);
+    const [alerts, setAlerts] = useState([]);
 
     // Fetch all stocks in a portfolio
     const fetchStocks = async (portfolioId) => {
@@ -54,7 +55,6 @@ const StockProvider = ({ children }) => {
                 body: JSON.stringify({ symbol, price, quantity, type, date}),
             });
             const stock = await response.json();
-            console.log(process.env.REACT_APP_API_KEY)
             setStocks((prevStocks) => [...prevStocks, stock]);
         } catch (error) {
             console.error("Failed to add stock:", error);
@@ -98,28 +98,28 @@ const StockProvider = ({ children }) => {
 
     // Break or delete SIP
     const deleteSip = async (id) =>{
-        const response = await fetch(`${host}/api/sips/deletesip/${id}`, {
-          method: "DELETE",
-          headers: {
-              "Content-Type": "application/json",
-              "auth-token": localStorage.getItem('token')
-          }
-        });
-        // eslint-disable-next-line
-        const json = await response.json();
-  
-        setSips(sips.filter(item => item._id !== id));
-      }
+    const response = await fetch(`${host}/api/sips/deletesip/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "auth-token": localStorage.getItem('token')
+        }
+    });
+    // eslint-disable-next-line
+    const json = await response.json();
 
-    const setAlert = async (symbol, alertPrice) =>{
+    setSips(sips.filter(item => item._id !== id));
+    }
+
+    const addAlert = async (symbol, alertPrice, condition) =>{
         try {
-            const response = await fetch(`${host}/api/alerts/`, {
+            const response = await fetch(`${host}/api/alerts/add`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "auth-token": localStorage.getItem('token'),
                 },
-                body: JSON.stringify({ symbol, alertPrice }),
+                body: JSON.stringify({ symbol, alertPrice, condition }),
             });
             const data = await response.json();
             if (response.ok) {
@@ -132,12 +132,42 @@ const StockProvider = ({ children }) => {
         }
     }
 
-    // Update a stock
+    const fetchAlerts = async () =>{
+        try {
+            const response = await fetch(`${host}/api/alerts/fetchallalerts`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token'),
+                },
+            });
+            const data = await response.json();
+            setAlerts(data)
+        } catch (error) {
+            console.error("Error fetching alerts:", error.message);
+        }
+    }
 
-    // Delete a stock
+    const deleteAlert = async (id) =>{
+        try {
+            const response = await fetch(`${host}/api/alerts/deletealert/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token')
+                }
+              });
+              // eslint-disable-next-line
+              const json = await response.json();
+        
+              setAlerts(alerts.filter(item => item._id !== id));
+        } catch (error) {
+            
+        }
+    }
 
     return (
-        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, setAlert}}>
+        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, addAlert, fetchAlerts, alerts, deleteAlert}}>
             {children}
         </StockContext.Provider>
     );

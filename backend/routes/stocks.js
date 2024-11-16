@@ -82,7 +82,7 @@ router.post('/:portfolioId/addstock', fetchuser, [
         
                 if (stock.quantity > 0) {
                     // Recalculate average price only if there are remaining stocks
-                    stock.price = (Number(stock.price) * Number(stock.quantity)) / stock.quantity;
+                    // stock.price = (Number(stock.price) * Number(stock.quantity)) / stock.quantity;
                     await stock.save();
                 } else {
                     await Stock.deleteOne({ _id: stock._id });

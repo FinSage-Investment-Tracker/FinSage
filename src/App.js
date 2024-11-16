@@ -3,28 +3,23 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import PortfolioList from './components/PortfolioList';
-import { PortfolioProvider } from './context/PortfolioContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import StockList from './components/StockList';
-import { StockProvider } from './context/StockContext';
 import MfList from './components/MfList'
 import PortfolioLayout from './components/PortfolioLayout';
-import { MFProvider } from './context/MfContext';
 import FixedDepositList from './components/fixeddeposit/FixedDepositList';
 import GoldList from './components/gold/GoldList';
-import { FDProvider } from './context/FDContext';
 import IpoList from './components/ipo/IpoList';
 import News from './components/News';
+import GlobalProvider from './context/GlobalProvider';
+import SipList from './components/sip/SipList';
 
 
 function App() {
   return (
     <>
-    <PortfolioProvider>
-    <StockProvider>
-    <MFProvider>
-    <FDProvider>
+    <GlobalProvider>
     <Router>
       <Navbar />
         <div className='container' >
@@ -40,15 +35,13 @@ function App() {
             <Route path="stocks" element={<StockList />} />
             <Route path="mutualfunds" element={<MfList />} />
             <Route path="fixeddeposit" element={<FixedDepositList />} />
+            <Route path="sip" element={<SipList />} />
             <Route path="gold" element={<GoldList />} />
             </Route>
           </Routes>
         </div>
     </Router>
-    </FDProvider>
-    </MFProvider>
-    </StockProvider>
-    </PortfolioProvider>
+    </GlobalProvider>
     </>
   );
 }

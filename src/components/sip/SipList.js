@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { StockContext } from '../../context/StockContext';
+import AddSip from './AddSip';
 
 const SipList = () => {
   const { portfolioId } = useParams();
@@ -19,6 +20,7 @@ const SipList = () => {
 }, [portfolioId]);
 
   return (
+    <div className="container mt-3">
     <div className='container'>
     <h3 className='my-3'>Active SIPs</h3>
     {sips.length === 0 ? (
@@ -46,6 +48,8 @@ const SipList = () => {
                     ))}
                 </>
             )}
+    </div>
+    <AddSip/>
     </div>
   )
 }

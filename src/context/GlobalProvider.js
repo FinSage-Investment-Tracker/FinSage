@@ -1,20 +1,26 @@
 import React from 'react';
-import { StocksProvider } from './StocksContext';
+import { StockProvider } from './StockContext';
 import { MFProvider } from './MfContext';
 import { PortfolioProvider } from './PortfolioContext';
 import { FDProvider } from './FDContext';
+import { UserProvider } from './UserContext';
+import { GoldProvider } from './GoldContext';
 
 const GlobalProvider = ({ children }) => {
     return (
+        <GoldProvider>
+        <UserProvider>
         <FDProvider>
-        <StocksProvider>
+        <StockProvider>
             <MFProvider>
                 <PortfolioProvider>
                     {children}
                 </PortfolioProvider>
             </MFProvider>
-        </StocksProvider>
+        </StockProvider>
         </FDProvider>
+        </UserProvider>
+        </GoldProvider>
     );
 };
 

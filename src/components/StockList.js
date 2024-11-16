@@ -7,14 +7,13 @@ import StockTransactions from './StockTransactions';
 // eslint-disable-next-line
 import StockChart from './StockChart';
 // import StockPieChart from './StockPieChart';
-import SipList from './sip/SipList';
-import AddSip from './sip/AddSip';
 import StockNews from './StockNews';
 import Spinner from './Spinner';
+import AlertList from './alert/AlertList';
 
 const StockList = () => {
     const { portfolioId } = useParams();
-    const {stocks, addStock, fetchStocks, fetchStocktransactions, setAlert } = useContext(StockContext);
+    const {stocks, addStock, fetchStocks, fetchStocktransactions, addAlert } = useContext(StockContext);
     const navigate = useNavigate();
     const [stock, setStock] = useState({ id:"", symbol: "", price: "", quantity: "", type: "sell", date:""});
     const ref = useRef(null);
@@ -23,7 +22,7 @@ const StockList = () => {
     const refClose2 = useRef(null);
     const [selectedStock, setSelectedStock] = useState(""); // State for dropdown selection
     const [loading, setLoading] = useState(false);
-    const [alertData, setAlertData] = useState({ symbol: "", alertPrice: "" });
+    const [alertData, setAlertData] = useState({ symbol: "", alertPrice: "", condition:"greater" });
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
@@ -82,7 +81,7 @@ const StockList = () => {
         e.preventDefault();
         console.log(alertData)
         try {
-            await setAlert(alertData.symbol, alertData.alertPrice); // Use the context function
+            await addAlert(alertData.symbol, alertData.alertPrice, alertData.condition); // Use the context function
             refClose2.current.click();
         } catch (error) {
             console.error("Error in submitAlert:", error.message);
@@ -90,8 +89,8 @@ const StockList = () => {
     };
 
     const openAlertModal = (stock) => {
-        setAlertData({ symbol: stock.symbol, alertPrice: "" });
         ref2.current.click();
+        setAlertData({ symbol: stock.symbol, alertPrice: "", condition:"greater" });
     };
 
 
@@ -110,7 +109,7 @@ const StockList = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h1 className="modal-title fs-5" id="editStockModalLabel">Sell {stock.symbol}</h1>
+                        <h1 className="modal-title fs-5" id="editStockModalLabel">Sell {stock.symbol}</h1> {/*here it is not shwing stock name */}
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
@@ -170,12 +169,40 @@ const StockList = () => {
         <div className="modal-dialog">
             <div className="modal-content">
                 <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="alertStockModalLabel">Set Alert for {stock.symbol}</h1>
+                    <h1 className="modal-title fs-5" id="alertStockModalLabel">Set Alert for {alertData.symbol}</h1>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
                     <form onSubmit={submitAlert}>
-                    <div className="mb-3">
+                                <div className="mb-3">
+                                    <div>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="condition"
+                                        id="greaterCondition"
+                                        value="greater"
+                                        checked={alertData.condition === "greater"}
+                                        onChange={handleAlertChange}
+                                        />
+                                        <label className="form-check-label" htmlFor="greaterCondition">Greater than</label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="condition"
+                                            id="lesserCondition"
+                                            value="lesser"
+                                            checked={alertData.condition === "lesser"}
+                                            onChange={handleAlertChange}
+                                        />
+                                        <label className="form-check-label" htmlFor="lesserCondition">Lesser than</label>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div className="mb-3">
                                     <label htmlFor="alertPrice" className="form-label">Alert Price</label>
                                     <input
                                         type="number"
@@ -222,10 +249,8 @@ const StockList = () => {
                 )}
         </div>
 
-        <SipList />
 
         <AddStock />
-        <AddSip />
         {/* <div className="row">
             <div className="col-md-6">
                 <StockPieChart />
@@ -236,6 +261,7 @@ const StockList = () => {
         </div> */}
 
         <StockTransactions/>
+        <AlertList/>
 
         {/* Dropdown Section */}
         <div className="dropdown">

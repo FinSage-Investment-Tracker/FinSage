@@ -30,7 +30,7 @@ const MfTransactions = () => {
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <div className="col">Fund</div>
                 <div className="col">nav</div>
-                <div className="col">invested</div>
+                <div className="col">units</div>
                 <div className="col">Date</div>
                 <div className="col">Type</div>
             </div>
@@ -39,7 +39,7 @@ const MfTransactions = () => {
             <div className="d-flex justify-content-between align-items-center">
                 <div className="col">{item.symbol}</div>
                 <div className="col">{item.nav}</div>
-                <div className="col">{item.invested}</div>
+                <div className="col">{item.units}</div>
                 <div className="col">{new Date(item.date).toLocaleDateString('en-GB')}</div>
                 <div className="col">{item.type}</div>
             </div>

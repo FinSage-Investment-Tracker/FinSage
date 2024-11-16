@@ -15,7 +15,7 @@ const MfTransactionSchema = new Schema({
         type: Number,
         required: true
     },
-    invested: {
+    units: {
         type: Number,
         required: true
     },

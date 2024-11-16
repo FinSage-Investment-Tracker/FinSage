@@ -28,9 +28,9 @@ const PortfolioSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'mutualfund'
     }],
-    fixedDeposits: [{
+    gold: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'fixed deposit'
+        ref: 'gold'
     }],
     date: {
         type: Date,

@@ -9,7 +9,7 @@ const MfList = () => {
   const {portfolioId} = useParams();
   const { mutualFunds, addMutualFund, fetchMutualFunds, fetchMfTransactions } = useContext(MFContext);
   const navigate = useNavigate();
-  const [mf, setMf] = useState({ id:"", symbol:"", nav:"", invested:"", date:"", type:"sell" });
+  const [mf, setMf] = useState({ id:"", symbol:"", nav:"", units:"", date:"", type:"sell" });
   const ref = useRef(null);
   const refClose = useRef(null);
 
@@ -32,7 +32,7 @@ const MfList = () => {
   // TODO : logic of checking sell price on date
   const handleClick = async (e) =>{
     e.preventDefault();
-    await addMutualFund(portfolioId, mf.symbol, mf.nav, mf.invested, mf.type, mf.date);
+    await addMutualFund(portfolioId, mf.symbol, mf.nav, mf.units, mf.type, mf.date);
     refClose.current.click();
     fetchMutualFunds(portfolioId);
     fetchMfTransactions(portfolioId);
@@ -40,7 +40,7 @@ const MfList = () => {
 
   const sellMf = (currentitem) =>{
     ref.current.click();
-    setMf({id:currentitem._id, symbol: currentitem.symbol, nav: "", invested: "", type: "sell", date: ""})
+    setMf({id:currentitem._id, symbol: currentitem.symbol, nav: "", units: "", type: "sell", date: ""})
   }
 
   return (
@@ -73,15 +73,15 @@ const MfList = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="invested" className="form-label">Redeem Amount</label>
+                            <label htmlFor="units" className="form-label">Redeem Units</label>
                             <input
                                 type="number"
                                 className="form-control"
-                                id="invested"
-                                name="invested"
-                                placeholder="redeem amount"
+                                id="units"
+                                name="units"
+                                placeholder="redeem units"
                                 onChange={onChange}
-                                value={mf.invested}
+                                value={mf.units}
                                 required
                             />
                         </div>

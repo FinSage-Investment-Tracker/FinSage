@@ -5,6 +5,7 @@ const fetchuser = require('../middleware/fetchuser');
 const Sip = require('../models/Sip');
 const Portfolio = require('../models/Portfolio');
 const { body, validationResult } = require('express-validator');
+const { sipExecutor } = require('../controllers/sipExecutor');
 
 router.post('/:portfolioId/start', fetchuser, [
     body('symbol').isString().withMessage('Symbol is required'),
@@ -28,6 +29,7 @@ router.post('/:portfolioId/start', fetchuser, [
 
         await sip.save();
         res.json(sip);
+        sipExecutor();
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error' });
