@@ -10,10 +10,11 @@ import StockChart from './StockChart';
 import StockNews from './StockNews';
 import Spinner from './Spinner';
 import AlertList from './alert/AlertList';
+import StockReturns from './returns/StockReturns';
 
 const StockList = () => {
     const { portfolioId } = useParams();
-    const {stocks, addStock, fetchStocks, fetchStocktransactions, addAlert } = useContext(StockContext);
+    const {stocks, addStock, fetchStocks, fetchStocktransactions, addAlert, fetchReturns } = useContext(StockContext);
     const navigate = useNavigate();
     const [stock, setStock] = useState({ id:"", symbol: "", price: "", quantity: "", type: "sell", date:""});
     const ref = useRef(null);
@@ -28,6 +29,7 @@ const StockList = () => {
         if (localStorage.getItem('token')) {
             fetchStocks(portfolioId);
             fetchStocktransactions(portfolioId);
+            fetchReturns(portfolioId);
         } else {
             navigate("/login");
         }
@@ -260,6 +262,7 @@ const StockList = () => {
             </div>
         </div> */}
 
+        <StockReturns/>
         <StockTransactions/>
         <AlertList/>
 

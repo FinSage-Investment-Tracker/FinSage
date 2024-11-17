@@ -5,6 +5,7 @@ const Portfolio = require('../models/Portfolio');
 const Stock = require('../models/Stock');
 const { body, validationResult } = require('express-validator');
 const StockTransaction = require('../models/StockTransaction');
+const PLBooked = require('../models/PLBooked');
 
 // ROUTE 1: Get all stocks in a portfolio
 router.get('/:portfolioId/stocks', fetchuser, async (req, res) => {
@@ -77,6 +78,24 @@ router.post('/:portfolioId/addstock', fetchuser, [
                 if (stock.quantity < quantity) {
                     return res.status(400).json({ error: 'Insufficient stock quantity to sell' });
                 }
+
+                // booking Profit or Loss
+                const profit = (Number(price) - Number(stock.price)) * Number(quantity);
+                let symbolreturn = await PLBooked.findOne({ portfolio: req.params.portfolioId, symbol });
+                if(symbolreturn){
+                    // update it
+                    symbolreturn.returns = (Number(symbolreturn.returns) + Number(profit));
+                    await symbolreturn.save();
+                }
+                else{
+                    // new
+                    const book = new PLBooked({
+                        portfolio: req.params.portfolioId,
+                        symbol,
+                        returns: profit
+                    });
+                    await book.save();
+                }
                 
                 stock.quantity -= quantity;
         
@@ -120,54 +139,20 @@ router.post('/:portfolioId/addstock', fetchuser, [
     }
 });
 
-// ROUTE 3: Update a stock
-// router.put('/updatestock/:id', fetchuser, async (req, res) => {
-//     try {
-//         const { symbol, price, quantity, type, date } = req.body;
-//         const updatedFields = {};
+router.get('/:portfolioId/booked', fetchuser, async (req, res) => {
+    try {
+        const portfolio = await Portfolio.findOne({ _id: req.params.portfolioId, user: req.user.id });
+        if (!portfolio) {
+            return res.status(404).json({ error: 'Portfolio not found' });
+        }
 
-//         if (symbol) updatedFields.symbol = symbol;
-//         if (price) updatedFields.price = price;
-//         if (quantity) updatedFields.quantity = quantity;
-//         if (type) updatedFields.type = type;
-//         if (date) updatedFields.date = date;
+        const returns = await PLBooked.find({ portfolio: req.params.portfolioId });
+        res.json(returns);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
-//         let stock = await Stock.findById(req.params.id);
-//         if (!stock) {
-//             return res.status(404).json({ error: 'Stock not found' });
-//         }
-
-//         stock = await Stock.findByIdAndUpdate(
-//             req.params.id,
-//             { $set: updatedFields },
-//             { new: true }
-//         );
-//         res.json(stock);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Server error' });
-//     }
-// });
-
-// ROUTE 4: Delete a stock
-// router.delete('/deletestock/:id', fetchuser, async (req, res) => {
-//     try {
-//         const stock = await Stock.findById(req.params.id);
-//         if (!stock) {
-//             return res.status(404).json({ error: 'Stock not found' });
-//         }
-
-//         await Stock.findByIdAndDelete(req.params.id);
-
-//         // updating in porfolio array
-//         const portfolioId = stock.portfolio;
-//         await Portfolio.findByIdAndUpdate(portfolioId, { $pull: { stocks: req.params.id } });
-
-//         res.json({ "Success": "Stock has been deleted" });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Server error' });
-//     }
-// });
 
 module.exports = router;

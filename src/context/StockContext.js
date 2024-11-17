@@ -8,6 +8,7 @@ const StockProvider = ({ children }) => {
     const [stocktransactions, setStockTransactions] = useState([]);
     const [sips, setSips] = useState([]);
     const [alerts, setAlerts] = useState([]);
+    const [booked, setBooked] = useState([]);
 
     // Fetch all stocks in a portfolio
     const fetchStocks = async (portfolioId) => {
@@ -162,12 +163,29 @@ const StockProvider = ({ children }) => {
         
               setAlerts(alerts.filter(item => item._id !== id));
         } catch (error) {
-            
+            console.error("Error deleting alert:", error.message);
         }
     }
 
+    // Fetch all stocks in a stock Transactions
+    const fetchReturns = async (portfolioId) => {
+        try {
+            const response = await fetch(`${host}/api/stocks/${portfolioId}/booked`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token'),
+                },
+            });
+            const data = await response.json();
+            setBooked(data);
+        } catch (error) {
+            console.error("Failed to fetch stocks:", error);
+        }
+    };
+
     return (
-        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, addAlert, fetchAlerts, alerts, deleteAlert}}>
+        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, addAlert, fetchAlerts, alerts, deleteAlert, booked, fetchReturns}}>
             {children}
         </StockContext.Provider>
     );
