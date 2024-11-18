@@ -184,8 +184,29 @@ const StockProvider = ({ children }) => {
         }
     };
 
+    const uploadFile = async (portfolioId, file) =>{
+        const formData = new FormData();
+        formData.append('excelFile', file);
+        try {
+            const response = await fetch(`${host}/api/fileupload/${portfolioId}/upload`, {
+                method: "POST",
+                headers: {
+                    "auth-token": localStorage.getItem('token'),
+                },
+                body: formData,
+            });
+            if (!response.ok) {
+                throw new Error('Failed to upload file');
+            }
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error("Failed to upload stocks file:", error);
+        }
+    }
+
     return (
-        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, addAlert, fetchAlerts, alerts, deleteAlert, booked, fetchReturns}}>
+        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, addAlert, fetchAlerts, alerts, deleteAlert, booked, fetchReturns, uploadFile}}>
             {children}
         </StockContext.Provider>
     );

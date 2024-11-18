@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { StockContext } from '../context/StockContext';
 import axios from 'axios';
+import FileUpload from './fileupload/FileUpload';
 
 const AddStock = () => {
     const { portfolioId } = useParams();
@@ -103,6 +104,7 @@ const AddStock = () => {
             <button onClick={toggleForm} className="btn btn-outline-primary mb-3">Add Stock</button>
             <div className="col-md-6 mx-auto mb-5 mt-3">
                 {showForm && (
+                    <>
                     <form onSubmit={handleAddStock} className="mb-4">
                         <div className="mb-3">
                             <div className="input-group">
@@ -184,6 +186,8 @@ const AddStock = () => {
                         </div>
                         <button type="submit" className="btn btn-primary">Add Stock</button>
                     </form>
+                    <FileUpload/>
+                    </>
                 )}
             </div>
         </>

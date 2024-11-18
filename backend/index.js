@@ -26,6 +26,8 @@ app.use('/api/charts', require('./routes/charts'))
 app.use('/api/stocksymbol', require('./routes/StockSymbols'))
 app.use('/api/mfsymbol', require('./routes/MfSymbols'))
 app.use('/api/news', require('./routes/news'))
+app.use('/api/fileupload', require('./routes/fileupload'))
+
 app.get('/api/stock-news', async (req, res) => {
     const company = req.query.company; // Get company name from query or default to "Tata Steel"
     try {
