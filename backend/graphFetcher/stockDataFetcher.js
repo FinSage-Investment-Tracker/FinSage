@@ -3,9 +3,8 @@ const StockTransaction = require('../models/StockTransaction'); // Import the St
 
 
 async function fetchStockData(symbol, fromDate, toDate, period) {
-    //66e9e5a7c52aa6.43032743
-    //6729f2d7d26559.77635622
-    const apiKey = ''; // You need to insert your API key here.
+
+    const apiKey = process.env.EODHD; // You need to insert your API key here.
     
     // Build the URL with the appropriate period (weekly or daily)
     const url = `https://eodhd.com/api/eod/${symbol}.NSE?from=${fromDate}&to=${toDate}&period=${period}&api_token=${apiKey}&fmt=json`;

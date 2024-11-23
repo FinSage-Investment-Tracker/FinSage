@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'putyourmoneytowork';
+const JWT_SECRET = process.env.JWT;
 
 
 // Middleware to fetch the user from JWT token

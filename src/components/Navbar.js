@@ -71,6 +71,7 @@ const Navbar = () => {
                 <li className="nav-link dropdown-toggle">more</li>
                 <ul className="dropdown-menu">
                   <li><Link className="dropdown-item" to='/sipcalculator'>SIP Calculator</Link></li>
+                  <li><Link className="dropdown-item" to='/lumpsumcalculator'>Lumpsum Calculator</Link></li>
                   <li><Link className="dropdown-item" to='/swpcalculator'>SWP Calculator</Link></li>
                 </ul>
               </li>

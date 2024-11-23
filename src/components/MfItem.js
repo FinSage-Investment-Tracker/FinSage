@@ -4,8 +4,6 @@ const MfItem = ({mf, sellMf}) => {
   const [todayPrice, setTodayPrice] = useState(null);
 
   const getPrice = async () => {
-    // VW453IKM1V01L7RE
-    // FNJ80BLVZPE52HW3
     const API_KEY = process.env.REACT_APP_AV;
     const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${mf.symbol}.BSE&outputsize=full&apikey=${API_KEY}`;
     

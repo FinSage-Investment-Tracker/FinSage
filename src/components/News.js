@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "./Spinner"; // Assuming you have a Spinner component
-import etImage from '../Assets/ET.jpg';  // Adjust the path based on where the image is located
+import etImage from '../Assets/ET.jpg'; // Adjust the path based on where the image is located
 import mintImage from '../Assets/mint.jpg'; 
 
 const News = ({ pageSize }) => {
@@ -11,15 +11,13 @@ const News = ({ pageSize }) => {
   const [totalResults, setTotalResults] = useState(0);
   const [error, setError] = useState(null);
 
-  // Fetch news function
   const fetchNews = async (page) => {
-    setLoading(true); // Set loading to true before fetch
+    setLoading(true);
     const url = `http://localhost:5000/api/news?page=${page}&pageSize=${pageSize}`;
     try {
       const response = await fetch(url);
       const data = await response.json();
 
-      // Initial fetch or updating with more articles
       if (page === 1) {
         setArticles(data.articles || []);
       } else {
@@ -27,16 +25,16 @@ const News = ({ pageSize }) => {
       }
 
       setTotalResults(data.totalResults || 0);
-      setLoading(false); // Set loading to false once data is fetched
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching news:", error);
       setError("Error fetching news. Please try again later.");
-      setLoading(false); // Set loading to false if error occurs
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchNews(1); // Initial fetch
+    fetchNews(1); 
     // eslint-disable-next-line
   }, []);
 
@@ -48,67 +46,75 @@ const News = ({ pageSize }) => {
 
   const getImageSource = (source) => {
     if (source === 'Economictimes') {
-      return etImage; // Replace with your Economictimes image URL
+      return etImage;
     } else if (source === 'Livemint') {
-      return mintImage; // Replace with your Livemint image URL
+      return mintImage;
     } else {
-      return 'https://via.placeholder.com/200'; // Fallback to a generic placeholder
+      return 'https://via.placeholder.com/200';
     }
   };
 
-  // Inline NewsItem Component
   const NewsItem = ({ title, description, imageUrl, newsUrl, author, date, source }) => (
-    <div className="card my-3" style={{ width: "18rem" }}>
+    <div
+      className="card my-3 shadow-sm d-flex flex-column"
+      style={{ borderRadius: "10px", overflow: "hidden", height: "100%" }}
+    >
       <img
-        src={imageUrl || getImageSource(source)}  // Use the dynamically set image source
+        src={imageUrl || getImageSource(source)}
         className="card-img-top"
         alt="News Thumbnail"
-        style={{ height: "150px", objectFit: "cover" }}
+        style={{ height: "200px", objectFit: "cover" }}
       />
-      <div className="card-body">
-        <h5 className="card-title">{title || "No Title Available"}</h5>
-        <p className="card-text">
-          {description ? description.slice(0, 88) : "No description available..."}
+      <div className="card-body d-flex flex-column" style={{ backgroundColor: "#f8f9fa" }}>
+        <h5 className="card-title text-truncate" style={{ fontWeight: "bold", color: "#333" }}>
+          {title || "No Title Available"}
+        </h5>
+        <p className="card-text" style={{ fontSize: "14px", color: "#555" }}>
+          {description ? description.slice(0, 88) + "..." : "No description available..."}
         </p>
-        <p className="card-text">
-          <small className="text-muted">
-            By {author || "Unknown"} on {new Date(date).toLocaleDateString()}
+        <div className="card-meta mb-2" style={{ fontSize: "12px", color: "#888" }}>
+          <small>
+            By <strong>{author || "Unknown"}</strong> on {new Date(date).toLocaleDateString()}
           </small>
-        </p>
-        <p className="card-text">
-          <small className="text-muted">
-            Source: {source || "Unknown"}
-          </small>
-        </p>
-        <a href={newsUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-primary">
-          Read More
-        </a>
+        </div>
+        <div className="card-meta mb-3" style={{ fontSize: "12px", color: "#888" }}>
+          <small>Source: {source || "Unknown"}</small>
+        </div>
+        <div className="mt-auto">
+          <a
+            href={newsUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-sm btn-outline-primary w-100"
+          >
+            Read More
+          </a>
+        </div>
       </div>
     </div>
   );
+  
 
   return (
-    <div className={`container my-3 text-black`}>
-      {/* Separate div for the heading */}
+    <div className={`container my-3`} style={{ maxWidth: "1200px" }}>
       <div className="text-center" style={{ marginTop: "20px", marginBottom: "20px" }}>
-        <h2>Indian Market News</h2>
+        <h2 style={{ fontWeight: "bold", color: "#333" }}>Indian Market News</h2>
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
 
-      {/* Show spinner during the initial fetch */}
       {loading && page === 1 && <Spinner />}
 
       <InfiniteScroll
         dataLength={articles.length}
         next={fetchMoreData}
         hasMore={articles.length < totalResults}
-        loader={<Spinner />}  // Show spinner while fetching more data
+        loader={<Spinner />}
       >
         <div className="container">
-          <div className="row">
+          <div className="row gx-4 gy-4">
             {articles.map((article, index) => (
-              <div className="col-md-4" key={index}>
+              <div className="col-md-4 d-flex" key={index}>
                 <NewsItem
                   title={article.title}
                   description={article.content}
@@ -116,7 +122,7 @@ const News = ({ pageSize }) => {
                   newsUrl={article.link}
                   author={article.creator}
                   date={article.pubDate}
-                  source={article.source}  // Added source here
+                  source={article.source}
                 />
               </div>
             ))}
@@ -124,8 +130,11 @@ const News = ({ pageSize }) => {
         </div>
       </InfiniteScroll>
 
-      {/* Show this message if no news articles are available */}
-      {!loading && articles.length === 0 && <h4>No more news found.</h4>}
+      {!loading && articles.length === 0 && (
+        <div className="text-center my-5">
+          <h4 style={{ color: "#555" }}>No more news found.</h4>
+        </div>
+      )}
     </div>
   );
 };

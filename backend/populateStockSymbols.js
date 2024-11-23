@@ -6,7 +6,7 @@ const populateStockSymbols = async () => {
     console.log('Populate stock symbols function called');  // To confirm if function is being triggered
     try {
         // Fetch stock symbols from the API
-        const response = await axios.get('https://eodhd.com/api/exchange-symbol-list/NSE?api_token=66e9e5a7c52aa6.43032743&fmt=json');
+        const response = await axios.get('https://eodhd.com/api/exchange-symbol-list/NSE?api_token=YOUR_API_KEY&fmt=json');
 
         // Extract symbols and names
         const symbols = response.data

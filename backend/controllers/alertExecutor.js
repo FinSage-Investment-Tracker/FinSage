@@ -1,6 +1,5 @@
 const nodemailer = require("nodemailer");
 const Alert = require("../models/Alert");
-const axios = require("axios");
 
 // Configure Nodemailer with Gmail credentials
 const transporter = nodemailer.createTransport({

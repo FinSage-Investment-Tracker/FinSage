@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const StockItem = ({ stock, sellStock, openAlertModal }) => {
+    const navigate = useNavigate();
+    const handleStockClick = (symbol) => {
+        navigate(`/stockinfo/${symbol}`);
+    };
     const [todayPrice, setTodayPrice] = useState(null);
 
     const getPrice = async () => {
+
         // VW453IKM1V01L7RE
         // FNJ80BLVZPE52HW3
         const API_KEY = process.env.REACT_APP_AV;
@@ -34,13 +40,14 @@ const StockItem = ({ stock, sellStock, openAlertModal }) => {
         <>
         <div className="card w-100 mb-3" style={{ padding: '15px' }}>
             <div className="d-flex justify-content-between align-items-center">
-                <div className="col">{stock.symbol}</div>
+            <div className="col" style={{ cursor: 'pointer', color: 'blue' }}
+                    onClick={() => handleStockClick(stock.symbol)}>{stock.symbol}</div>
                 <div className="col">{stock.quantity}</div>
-                <div className="col">{stock.price}</div>
+                <div className="col">{stock.price.toFixed(2)}</div>
                 <div className="col">{todayPrice}</div>
                 <div className="col">{invested}</div>
-                <div className="col" style={{ color: current >= invested ? 'green' : 'red', fontWeight: 'bold' }}>{current}</div>
-                <div className="col" style={{ color: returns_change > 0 ? 'green' : 'red', fontWeight: 'bold' }}>{returns_change}%</div>
+                <div className="col" style={{ color: current >= invested ? 'green' : 'red', fontWeight: 'bold' }}>{current.toFixed(2)}</div>
+                <div className="col" style={{ color: returns_change > 0 ? 'green' : 'red', fontWeight: 'bold' }}>{returns_change.toFixed(2)}%</div>
                 <button type="button" className="btn btn-danger" onClick={() => sellStock(stock)} >Sell</button>
                 <i className="fa-solid fa-bell col-auto mx-3" style={{ cursor: 'pointer' }} onClick={() => openAlertModal(stock)} ></i>
             </div>

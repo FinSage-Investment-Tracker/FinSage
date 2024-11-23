@@ -61,10 +61,6 @@ const MFProvider = ({ children }) => {
         }
     };
 
-    // update a mutualfund
-
-    // delete a mutual fund
-
 
 
     return (

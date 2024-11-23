@@ -60,7 +60,7 @@ const AddStock = () => {
     const handleAddStock = async (e) => {
         e.preventDefault();
         
-        const API_KEY = "66f3115d0f1214.40427570"; // Add your API key here
+        const API_KEY = process.env.REACT_APP_EODHD1; // Add your API key here
         const url = `https://eodhd.com/api/eod/${newStock.symbol}.nse?from=${newStock.date}&to=${newStock.date}&period=d&api_token=${API_KEY}&fmt=json`;
 
         try {

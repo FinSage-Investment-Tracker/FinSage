@@ -1,12 +1,13 @@
 const express = require('express');
+const fs = require('fs');
 const multer = require('multer');
 const extractExcelData = require('../controllers/fileExtractor');
 const router = express.Router();
 const fetchuser = require('../middleware/fetchuser');
 const Portfolio = require('../models/Portfolio');
 const moment = require('moment');
-
-const StockTransaction = require('../models/StockTransaction');
+const StockDummies = require('../models/StockDummies');
+const { dummytoreal } = require('../controllers/dummyToReal');
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -28,7 +29,7 @@ router.post('/:portfolioId/upload', upload.single('excelFile'), fetchuser, async
                 return res.status(404).json({ error: 'Portfolio not found' });
             }
 
-            const unrealisedStock = new StockTransaction({
+            const unrealisedStock = new StockDummies({
                 portfolio: req.params.portfolioId,
                 symbol: stockName,
                 quantity: parseFloat(quantity),
@@ -45,6 +46,8 @@ router.post('/:portfolioId/upload', upload.single('excelFile'), fetchuser, async
                 console.error('Error deleting temporary file:', err);
             }
         });
+
+        dummytoreal();
 
         // Send response to frontend
         res.json({ message: 'File Data saved to MongoDB successfully' });

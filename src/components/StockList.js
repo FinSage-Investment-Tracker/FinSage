@@ -43,7 +43,7 @@ const StockList = () => {
     //section for selling price logic
     const handleClick = async (e) =>{
         e.preventDefault();
-        const API_KEY = "66f3115d0f1214.40427570"; // Add your API key here
+        const API_KEY = process.env.REACT_APP_EODHD1; // Add your API key here
         const url = `https://eodhd.com/api/eod/${stock.symbol}.nse?from=${stock.date}&to=${stock.date}&period=d&api_token=${API_KEY}&fmt=json`;
 
         try {
@@ -253,14 +253,14 @@ const StockList = () => {
 
 
         <AddStock />
-        {/* <div className="row">
+        <div className="row">
             <div className="col-md-6">
                 <StockPieChart />
             </div>
             <div className="col-md-6">
                 <StockPieChart />
             </div>
-        </div> */}
+        </div>
 
         <StockReturns/>
         <StockTransactions/>
