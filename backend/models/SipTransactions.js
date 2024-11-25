@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const GoldSchema = new Schema({
+const SipTransactionSchema = new Schema({
     portfolio: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'portfolio',
         required: true
     },
-    type: {
+    symbol: {
         type: String,
         required: true
     },
@@ -19,10 +19,15 @@ const GoldSchema = new Schema({
         type: Number,
         required: true
     },
+    type: {
+        type: String,
+        enum: ['buy', 'sell'],
+        required: true
+    },
     date: {
         type: Date,
         default: Date.now
     }
 });
 
-module.exports = mongoose.model('gold', GoldSchema);
+module.exports = mongoose.model('siptransaction', SipTransactionSchema);

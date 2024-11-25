@@ -6,6 +6,7 @@ const Sip = require('../models/Sip');
 const Portfolio = require('../models/Portfolio');
 const { body, validationResult } = require('express-validator');
 const { sipExecutor } = require('../controllers/sipExecutor');
+const SipTransactions = require('../models/SipTransactions');
 
 router.post('/:portfolioId/start', fetchuser, [
     body('symbol').isString().withMessage('Symbol is required'),
@@ -72,6 +73,22 @@ router.delete('/deletesip/:id', fetchuser, async (req, res) => {
         // Delete the SIP entry
         await Sip.findByIdAndDelete(req.params.id);
         res.json({ "Success": "SIP stopped from today" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// fetch sip transactions
+router.get('/:portfolioId/siptransactions', fetchuser, async (req, res) => {
+    try {
+        const portfolio = await Portfolio.findOne({ _id: req.params.portfolioId, user: req.user.id });
+        if (!portfolio) {
+            return res.status(404).json({ error: 'Portfolio not found' });
+        }
+
+        const transaction = await SipTransactions.find({ portfolio: req.params.portfolioId });
+        res.json(transaction);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error' });

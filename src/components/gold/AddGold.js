@@ -6,13 +6,14 @@ const AddGold = () => {
     const { portfolioId } = useParams()
     const { addGold } = useContext(GoldContext);
 
-    const [gold, setGold] = useState({type:"24k", price:"", date:""});
+    const [gold, setGold] = useState({type:"gold", price:"", quantity:"", date:""});
     const [showForm, setShowForm] = useState(false);
 
     const handleClick = async (e) =>{
       e.preventDefault();
-      await addGold(portfolioId, gold.type, gold.price, gold.date);
-      setGold({type:"", price:"", date:""});
+      await addGold(portfolioId, gold.type, gold.price, gold.quantity, gold.date);
+      setGold({type:"", price:"", quantity:"", date:""});
+      toggleForm();
     }
     const onChange =(e) =>{
       setGold({...gold, [e.target.name]:e.target.value})
@@ -23,12 +24,27 @@ const AddGold = () => {
     };
   return (
     <>
-    <button onClick={toggleForm} className="btn btn-outline-primary mb-3">Add Gold Investment</button>
+    <button onClick={toggleForm} className="btn btn-outline-primary mb-3">Add Investment</button>
     <div className="col-md-6 mx-auto mb-5 mt-3">
     {showForm && (
         <form onSubmit={handleClick} className="mb-4">
+
         <div className="mb-3">
-            <label htmlFor="price" className="form-label">Purchase Price</label>
+            <label htmlFor="type" className="form-label">Commodity</label>
+            <select
+                className="form-select"
+                id="type"
+                name="type"
+                onChange={onChange}
+                required
+            >
+                <option value="gold">Gold</option>
+                <option value="silver">Silver</option>
+                <option value="platinum">Platinum</option>
+            </select>
+        </div>
+
+        <div className="mb-3">
             <input
                 type="number"
                 className="form-control"
@@ -41,17 +57,15 @@ const AddGold = () => {
         </div>
 
         <div className="mb-3">
-            <label htmlFor="type" className="form-label">Purity</label>
-            <select
-                className="form-select"
-                id="type"
-                name="type"
+            <input
+                type="number"
+                className="form-control"
+                id="quantity"
+                name="quantity"
+                placeholder="Enter quantity in grams"
                 onChange={onChange}
                 required
-            >
-                <option value="24k">24K</option>
-                <option value="22k">22K</option>
-            </select>
+            />
         </div>
 
         <div className="mb-3">

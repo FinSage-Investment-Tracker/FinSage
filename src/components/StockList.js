@@ -6,7 +6,7 @@ import AddStock from './AddStock'; // Import AddStock component
 import StockTransactions from './StockTransactions';
 // eslint-disable-next-line
 import StockChart from './StockChart';
-// import StockPieChart from './StockPieChart';
+import StockPieChart from './StockPieChart';
 import StockNews from './StockNews';
 import Spinner from './Spinner';
 import AlertList from './alert/AlertList';
@@ -43,7 +43,7 @@ const StockList = () => {
     //section for selling price logic
     const handleClick = async (e) =>{
         e.preventDefault();
-        const API_KEY = process.env.REACT_APP_EODHD1; // Add your API key here
+        const API_KEY = ''; // Add your API key here
         const url = `https://eodhd.com/api/eod/${stock.symbol}.nse?from=${stock.date}&to=${stock.date}&period=d&api_token=${API_KEY}&fmt=json`;
 
         try {

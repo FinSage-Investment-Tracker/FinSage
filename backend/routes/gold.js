@@ -25,7 +25,7 @@ router.get('/:portfolioId/gold', fetchuser, async (req, res) => {
 router.post('/:portfolioId/addgold', fetchuser, async (req, res) => {
     try {
 
-        const { type, price, date } = req.body;
+        const { type, price, quantity, date } = req.body;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -41,6 +41,7 @@ router.post('/:portfolioId/addgold', fetchuser, async (req, res) => {
             portfolio: req.params.portfolioId,
             type,
             price,
+            quantity,
             date
         });
 

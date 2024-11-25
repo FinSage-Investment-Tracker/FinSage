@@ -22,7 +22,7 @@ const GoldProvider = ({children}) =>{
         }
     }
 
-    const addGold = async (portfolioId, type, price, date) =>{
+    const addGold = async (portfolioId, type, price, quantity, date) =>{
         try {
             const response = await fetch(`${host}/api/gold/${portfolioId}/addgold`, {
                 method: "POST",
@@ -30,7 +30,7 @@ const GoldProvider = ({children}) =>{
                     "Content-Type": "application/json",
                     "auth-token": localStorage.getItem('token'),
                 },
-                body: JSON.stringify({ type, price, date}),
+                body: JSON.stringify({ type, price, quantity, date}),
             });
             const res = await response.json();
             setGold((prev) => [...prev, res]);

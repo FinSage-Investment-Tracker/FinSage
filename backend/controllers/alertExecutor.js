@@ -22,7 +22,7 @@ const alertExecutor = async () =>{
                 // Send email to user email (from your Gmail account)
                 console.log("Price crossed, sending email...");
                 await transporter.sendMail({
-                    from: '"CapitaWise" <no-reply@gmail.com>', // Your Gmail email address
+                    from: '"FinSage" <no-reply@gmail.com>', // Your Gmail email address
                     to: alert.user.email, // Recipient's email (user's email)
                     subject: `Price Alert: ${alert.symbol}`,
                     text: `The stock ${alert.symbol} has reached your alert price of ${alert.alertPrice}. Current price: ${currentPrice}.`,

@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { StockContext } from '../../context/StockContext';
 import AddSip from './AddSip';
+import SipTransactions from './SipTransactions';
 
 const SipList = () => {
   const { portfolioId } = useParams();
@@ -50,6 +51,7 @@ const SipList = () => {
             )}
     </div>
     <AddSip/>
+    <SipTransactions/>
     </div>
   )
 }

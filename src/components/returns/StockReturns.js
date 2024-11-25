@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { StockContext } from '../../context/StockContext'
 import { useParams, useNavigate } from 'react-router-dom'
+import BookedChart from './BookedChart'
 
 const StockReturns = () => {
     const { portfolioId } = useParams();
@@ -25,6 +26,10 @@ const StockReturns = () => {
         </div>
     ) : (
         <>
+        <div>
+        <BookedChart data={booked} />
+
+        </div>
         <div className="d-flex justify-content-between align-items-center mb-3">
             <div className="col">Symbol</div>
             <div className="col">Returns</div>

@@ -2,6 +2,7 @@ const Sip = require('../models/Sip');
 const StockTransaction = require('../models/StockTransaction');
 const Stock = require('../models/Stock');
 const fetchStockPrice = require('../services/fetchStockPrice');
+const SipTransactions = require('../models/SipTransactions');
 
 const sipExecutor = async () =>{
     try {
@@ -52,7 +53,16 @@ const sipExecutor = async () =>{
                         type: 'buy',
                         date: transactionDate,
                     });
+                    const sipTransaction = new SipTransactions({
+                        portfolio: sip.portfolio,
+                        symbol: sip.symbol,
+                        price,
+                        quantity: sip.quantity,
+                        type: 'buy',
+                        date: transactionDate,
+                    });
                     await stockTransaction.save();
+                    await sipTransaction.save();
                     console.log(`Transaction saved for ${sip.symbol} on ${transactionDate.toISOString().split('T')[0]}`);
 
                     // Update the stock holding or create a new one

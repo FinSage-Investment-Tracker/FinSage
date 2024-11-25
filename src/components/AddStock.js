@@ -60,7 +60,7 @@ const AddStock = () => {
     const handleAddStock = async (e) => {
         e.preventDefault();
         
-        const API_KEY = process.env.REACT_APP_EODHD1; // Add your API key here
+        const API_KEY = ''; // Add your API key here
         const url = `https://eodhd.com/api/eod/${newStock.symbol}.nse?from=${newStock.date}&to=${newStock.date}&period=d&api_token=${API_KEY}&fmt=json`;
 
         try {
@@ -71,6 +71,7 @@ const AddStock = () => {
             if (newStock.price < high && newStock.price > low) {
                 await addStock(portfolioId, newStock.symbol, newStock.price, newStock.quantity, newStock.type, newStock.date);
                 setNewStock({ symbol: "", price: "", quantity: "", type: "buy", date: "" });
+                toggleForm();
                 fetchStocks(portfolioId);
                 fetchStocktransactions(portfolioId);
             } else {

@@ -6,6 +6,7 @@ const StockProvider = ({ children }) => {
     const host = "http://localhost:5000";
     const [stocks, setStocks] = useState([]);
     const [stocktransactions, setStockTransactions] = useState([]);
+    const [siptransactions, setSipTransactions] = useState([]);
     const [sips, setSips] = useState([]);
     const [alerts, setAlerts] = useState([]);
     const [booked, setBooked] = useState([]);
@@ -108,9 +109,25 @@ const StockProvider = ({ children }) => {
     });
     // eslint-disable-next-line
     const json = await response.json();
-
     setSips(sips.filter(item => item._id !== id));
     }
+
+    // fetch sip transactions
+    const fetchSiptransactions = async (portfolioId) => {
+        try {
+            const response = await fetch(`${host}/api/sips/${portfolioId}/siptransactions`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token'),
+                },
+            });
+            const data = await response.json();
+            setSipTransactions(data);
+        } catch (error) {
+            console.error("Failed to fetch stocks:", error);
+        }
+    };
 
     const addAlert = async (symbol, alertPrice, condition) =>{
         try {
@@ -206,7 +223,7 @@ const StockProvider = ({ children }) => {
     }
 
     return (
-        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, addAlert, fetchAlerts, alerts, deleteAlert, booked, fetchReturns, uploadFile}}>
+        <StockContext.Provider value={{ stocks, stocktransactions, fetchStocktransactions, fetchStocks, addStock, addSip, fetchSips, sips, deleteSip, fetchSiptransactions, siptransactions, addAlert, fetchAlerts, alerts, deleteAlert, booked, fetchReturns, uploadFile}}>
             {children}
         </StockContext.Provider>
     );
