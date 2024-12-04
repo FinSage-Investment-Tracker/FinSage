@@ -4,7 +4,7 @@ const MFTransaction = require('../models/MfTransaction'); // Import the StockTra
 
 async function fetchStockData(symbol, fromDate, toDate, period) {
 
-    const apiKey = process.env.EODHD; // You need to insert your API key here.
+    const apiKey = '67509a113de9e2.28909585'; // You need to insert your API key here.
     
     // Build the URL with the appropriate period (weekly or daily)
     const url = `https://eodhd.com/api/eod/${symbol}.NSE?from=${fromDate}&to=${toDate}&period=${period}&api_token=${apiKey}&fmt=json`;

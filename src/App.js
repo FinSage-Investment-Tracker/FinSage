@@ -20,6 +20,7 @@ import ChatBotWindow from './components/chatbot/ChatBotWindow';
 import SipCalculator from './components/calculators/SIPCalculator';
 import SwpCalculator from './components/calculators/SwpCalculator';
 import LumpsumCalculator from './components/calculators/LumpsumCalculator';
+import StockInfo from './components/StockInfo';
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
             <Route exact path="/sipcalculator" element={<SipCalculator/> } />
             <Route exact path="/lumpsumcalculator" element={<LumpsumCalculator/> } />
             <Route exact path="/swpcalculator" element={<SwpCalculator/> } />
+            <Route exact path="/stockinfo/:symbol" element={<StockInfo/> } />
             {/* nested tabs */}
             <Route path="/portfolio/:portfolioId" element={<PortfolioLayout />} >
             <Route path="stocks" element={<StockList />} />

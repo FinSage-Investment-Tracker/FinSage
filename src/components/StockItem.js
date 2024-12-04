@@ -12,7 +12,7 @@ const StockItem = ({ stock, sellStock, openAlertModal }) => {
 
         // VW453IKM1V01L7RE
         // FNJ80BLVZPE52HW3
-        const API_KEY = process.env.REACT_APP_AV;
+        const API_KEY = 'FNJ80BLVZPE52HW3';
         const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock.symbol}.BSE&outputsize=full&apikey=${API_KEY}`;
         
         try {

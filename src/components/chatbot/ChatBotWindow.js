@@ -49,8 +49,6 @@ function ChatBotWindow() {
   const [currentOptions, setCurrentOptions] = useState(initialQuestions);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [companySymbol, setCompanySymbol] = useState('');
-  // const [companyData, setCompanyData] = useState(null);
-  // const [isAskingSymbol, setIsAskingSymbol] = useState(false);
   const [previousStates, setPreviousStates] = useState([]);
   const endOfChatRef = useRef(null);
 
@@ -79,21 +77,15 @@ function ChatBotWindow() {
       setSelectedQuestion(option);
       setCurrentOptions([{ question: 'Enter Company Symbol', type: 'input' }]);
     } else {
-      // For leaf-level questions, show only navigation buttons
       setPreviousStates((prev) => [...prev, { type: 'options', options: currentOptions }]);
-      setCurrentOptions([]); // Clear the current options to hide buttons
-      setSelectedQuestion(null); // Clear selected question if needed
+      setCurrentOptions([]);
+      setSelectedQuestion(null);
     }
   };
 
-
-
-  // Define API key
-  const apiKey = process.env.REACT_APP_CHATBOT;
-
   const handleSymbolSubmit = async () => {
     if (companySymbol.trim()) {
-      fetchCompanyData(companySymbol); // Call API to fetch company data
+      fetchCompanyData(companySymbol);
     } else {
       alert("Please enter a valid company symbol.");
     }
@@ -106,16 +98,12 @@ function ChatBotWindow() {
       const response = await fetch(url, {
         method: 'GET',
         headers: {
-          'x-rapidapi-key': apiKey, // Your RapidAPI key
+          'x-rapidapi-key': '', // Your RapidAPI key
           'x-rapidapi-host': 'indian_stock_price_and_fundamentals.p.rapidapi.com',
         },
       });
 
       const data = await response.json();
-
-      console.log(data);
-
-      console.log("API Response:", data); // Log API response
 
       if (data) {
         const name = symbol;
@@ -126,31 +114,13 @@ function ChatBotWindow() {
         const eps = data['2023-12-31']?.Ratios?.Adj_EPS?.Value || 'N/A';
         const ps = data['2023-12-31']?.Ratios?.PS?.Value || 'N/A';
 
-        const companyInfo = `${name} :-
-          BSE Code: ${bsecode}
-          Revenue : ${revenue}
-          P/E Ratio: ${peRatio}
-          PEG Ratio: ${pegRatio}
-          EPS: ${eps}
-          P/S Ratio: ${ps}`.trim();
+        const companyInfo = `${name} :-\nBSE Code: ${bsecode}\nRevenue : ${revenue}\nP/E Ratio: ${peRatio}\nPEG Ratio: ${pegRatio}\nEPS: ${eps}\nP/S Ratio: ${ps}`.trim();
 
         setChatHistory((prev) => [
           ...prev,
           { type: 'user', text: `Company Symbol: ${symbol}` },
           { type: 'bot', text: companyInfo, isHTML: true },
         ]);
-
-        // setCompanyData({
-        //   name,
-        //   bsecode,
-        //   revenue,
-        //   peRatio,
-        //   pegRatio,
-        //   eps,
-        //   ps,
-        // });
-
-        // setIsAskingSymbol(false);
       } else {
         alert("No data found for the given symbol.");
       }
@@ -159,8 +129,6 @@ function ChatBotWindow() {
       alert("Failed to fetch data. Please try again.");
     }
   };
-
-
 
   const handleInputChange = (event) => {
     setCompanySymbol(event.target.value);
@@ -173,27 +141,24 @@ function ChatBotWindow() {
       setCurrentOptions(lastState.options || initialQuestions);
       setSelectedQuestion(null);
       setCompanySymbol('');
-      // setCompanyData(null);
     }
   };
 
   const handleBackToMainMenu = () => {
-
     setCurrentOptions(initialQuestions);
     setSelectedQuestion(null);
     setPreviousStates([]);
     setCompanySymbol('');
-    // setCompanyData(null);
   };
 
   return (
     <div
       style={{
         position: 'fixed',
-        bottom: '80px',
-        right: '20px',
-        width: '350px',
-        height: '500px',
+        bottom: '10%',
+        right: '5%',
+        width: '25%',  // Reduced width
+        height: '85%',  // Increased height
         backgroundColor: 'white',
         boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.3)',
         borderRadius: '10px',
@@ -204,156 +169,117 @@ function ChatBotWindow() {
     >
       <div
         style={{
-          flex: 1,
-          padding: '10px',
+          flex : '1',
           overflowY: 'auto',
+          padding: '10px',
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        {chatHistory.map((msg, index) => (
-          <div
-            key={index}
-            style={{
-              textAlign: msg.type === 'user' ? 'right' : 'left',
-              marginBottom: '10px',
-            }}
-          >
-            <p
+        {chatHistory.map((message, index) => (
+          <div key={index} style={{ marginBottom: '10px', textAlign: message.type === 'user' ? 'right' : 'left' }}>
+            <div
               style={{
                 display: 'inline-block',
                 padding: '10px',
-                borderRadius: '10px',
-                backgroundColor: msg.type === 'user' ? '#0078D7' : '#f0f0f0',
-                color: msg.type === 'user' ? 'white' : 'black',
+                borderRadius: '5px',
+                backgroundColor: message.type === 'user' ? '#f1f0f0' : '#f1f0f0',
                 maxWidth: '80%',
-                whiteSpace: 'pre-wrap',
-                textAlign: 'left',
-                margin: 0,
               }}
             >
-              {msg.type === 'bot' && (
-                <strong
-                  style={{
-                    display: 'block',
-                    marginBottom: '5px',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  BOT:
-                </strong>
-              )}
-              {msg.text}
-            </p>
+              {message.type === 'bot' && <strong>FinSage: </strong>}
+              {message.text}
+            </div>
           </div>
         ))}
-
         <div ref={endOfChatRef} />
       </div>
-
       <div
         style={{
-          borderTop: '1px solid #ccc',
           padding: '10px',
+          borderTop: '1px solid #ddd',
+          display: 'flex',
+          flexDirection: 'column',
+          maxHeight : '30%',
+          overflow : 'auto'
         }}
       >
-        <div
-          style={{
-            maxHeight: '250px',
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-          }}
-        >
-          {currentOptions.map((option, index) => (
+        {selectedQuestion && selectedQuestion.askForSymbol && (
+          <div style={{ display: 'flex', marginBottom: '10px' }}>
+            <input
+              type="text"
+              value={companySymbol}
+              onChange={handleInputChange}
+              placeholder="Enter Company Symbol"
+              style={{ padding: '5px', marginRight: '10px', flex: 1 }}
+            />
             <button
-              key={index}
-              onClick={() => handleOptionClick(option)}
+              onClick={handleSymbolSubmit}
               style={{
-                display: 'block',
-                width: '100%',
-                padding: '10px',
-                backgroundColor: '#28a745',
+                padding: '5px 10px',
+                backgroundColor: '#007bff',
                 color: 'white',
                 border: 'none',
                 borderRadius: '5px',
-                cursor: 'pointer',
               }}
             >
-              {option.question}
+              Submit
             </button>
-          ))}
+          </div>
+        )}
 
-          {selectedQuestion?.askForSymbol && (
-            <div>
-              <input
-                type="text"
-                value={companySymbol}
-                onChange={handleInputChange}
-                placeholder="Enter Company Symbol"
-                style={{
-                  padding: '10px',
-                  borderRadius: '5px',
-                  marginBottom: '10px',
-                  width: '100%',
-                  border: '1px solid #ccc',
-                }}
-              />
-              <button
-                onClick={handleSymbolSubmit}
-                style={{
-                  padding: '10px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                }}
-              >
-                Get Fundamentals
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-          {previousStates.length > 0 && (
-            <button
-              onClick={handleBack}
-              style={{
-                flex: 1,
-                marginRight: '5px',
-                padding: '10px',
-                backgroundColor: 'rgb(114 106 191)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-              }}
-            >
-              Back
-            </button>
-          )}
+        {currentOptions.map((option, index) => (
           <button
-            onClick={handleBackToMainMenu}
+            key={index}
+            onClick={() => handleOptionClick(option)}
             style={{
-              flex: 1,
-              marginLeft: previousStates.length > 0 ? '5px' : '0',
               padding: '10px',
-              backgroundColor: 'rgb(114 106 191)',
-              color: 'white',
-              border: 'none',
+              backgroundColor: '#f1f0f0',
+              border: '1px solid #ddd',
               borderRadius: '5px',
-              cursor: 'pointer',
+              margin: '5px 0',
+              textAlign: 'left',
+              width: '100%',
             }}
           >
-            Back to Main Menu
+            {option.question}
           </button>
-        </div>
+        ))}
+
+        {previousStates.length > 0 && (
+          <button
+            onClick={handleBack}
+            style={{
+              padding: '10px',
+              backgroundColor: '#f1f0f0',
+              border: '1px solid #ddd',
+              borderRadius: '5px',
+              marginTop: '10px',
+              textAlign: 'center',
+              width: '100%',
+            }}
+          >
+            Back
+          </button>
+        )}
+
+        <button
+          onClick={handleBackToMainMenu}
+          style={{
+            padding: '10px',
+            backgroundColor: '#f1f0f0',
+            border: '1px solid #ddd',
+            borderRadius: '5px',
+            marginTop: '10px',
+            textAlign: 'center',
+            width: '100%',
+          }}
+        >
+          Back to Main Menu
+        </button>
       </div>
     </div>
   );
-
 }
+
 export default ChatBotWindow;

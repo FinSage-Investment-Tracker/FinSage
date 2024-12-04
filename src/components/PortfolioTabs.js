@@ -18,9 +18,9 @@ const PortfolioTabs = () => {
       <li className="nav-item">
         <Link className={`nav-link ${location.pathname.includes('/gold') ? 'active' : ''}`} to="gold">Commodities</Link>
       </li>
-      <li className="nav-item">
+      {/* <li className="nav-item">
         <Link className={`nav-link ${location.pathname.includes('/fixeddeposit') ? 'active' : ''}`} to="fixeddeposit">Fixed Deposit</Link>
-      </li>
+      </li> */}
       
     </ul>
   );

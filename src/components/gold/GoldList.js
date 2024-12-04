@@ -23,7 +23,7 @@ const GoldList = () => {
 
 const fetchPrices = async () => {
   // 6988162245ea0304c511677c8a0246a1
-    const API_KEY = '';
+    const API_KEY = '6988162245ea0304c511677c8a0246a1';
     const url = `https://api.metalpriceapi.com/v1/latest?api_key=${API_KEY}&base=INR&currencies=XPT,XAU,XAG`;
     try {
       const response = await fetch(url);

@@ -1,5 +1,5 @@
 async function fetchStockPrice(symbol, formattedDate) {
-    const API_KEY = process.env.EODHD;
+    const API_KEY = '67509a113de9e2.28909585';
     const baseURL = `https://eodhd.com/api/eod/${symbol}.nse`;
     const maxRetries = 5; // Maximum number of days to try
     let currentDate = new Date(formattedDate);
