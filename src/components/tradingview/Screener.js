@@ -23,7 +23,7 @@ function Screener() {
         "height": 550,
         "defaultColumn": "overview",
         "defaultScreen": "most_capitalized",
-        "market": "india",
+        "market": "us",
         "showToolbar": true,
         "colorTheme": "light",
         "locale": "en"

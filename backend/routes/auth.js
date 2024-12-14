@@ -25,9 +25,9 @@ router.post('/sendotp', async (req, res) => {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     const mailOptions = {
-        from: '"CapitaWise" <no-reply@gmail.com>',
+        from: '"FinSage" <no-reply@gmail.com>',
         to: email,
-        subject: 'CapitaWise Email Verification Code',
+        subject: 'FinSage Email Verification Code',
         text: `Your verification code is: ${code}`,
     }
 

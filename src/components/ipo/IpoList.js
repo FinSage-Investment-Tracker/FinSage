@@ -15,7 +15,7 @@ const IpoList = () => {
       const response = await fetch('https://indian-stock-exchange-api2.p.rapidapi.com/ipo', {
         method: 'GET',
         headers: {
-          'x-rapidapi-key': '',
+          'x-rapidapi-key': '5d7c661377msh93b90c6777f0313p179780jsneaa9f4be588a',
           'x-rapidapi-host': 'indian-stock-exchange-api2.p.rapidapi.com'
         }
       });

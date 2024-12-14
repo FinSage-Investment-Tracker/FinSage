@@ -9,23 +9,25 @@ const StockItem = ({ stock, sellStock, openAlertModal }) => {
     const [todayPrice, setTodayPrice] = useState(null);
 
     const getPrice = async () => {
-
-        // VW453IKM1V01L7RE
-        // FNJ80BLVZPE52HW3
-        const API_KEY = 'FNJ80BLVZPE52HW3';
-        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock.symbol}.BSE&outputsize=full&apikey=${API_KEY}`;
-        
+        const API_TOKEN = '67513154014743.32771947';
+        const url = `https://eodhd.com/api/eod/${stock.symbol}.nse?api_token=${API_TOKEN}&fmt=json`;
+    
         try {
             const response = await fetch(url);
             const data = await response.json();
-            const timeSeries = data["Time Series (Daily)"];
-            const latestDate = Object.keys(timeSeries)[0];
-            const today_price = parseFloat(timeSeries[latestDate]["4. close"]);
-            setTodayPrice(today_price);
+            
+            if (data && data.length > 0) {
+                // Fetch the latest price from the last object in the response
+                const latestPrice = data[data.length - 1].close;
+                setTodayPrice(latestPrice);
+            } else {
+                console.error("No data available for the given stock symbol.");
+            }
         } catch (error) {
             console.error("Error fetching stock price:", error);
         }
     };
+    
 
     useEffect(() => {
         getPrice();

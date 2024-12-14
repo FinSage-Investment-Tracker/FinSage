@@ -8,15 +8,19 @@ const StockNews = ({ company }) => {
 
   useEffect(() => {
     const fetchNews = async () => {
-      try {
-        // Send the company prop as a query parameter or include it in the URL
-        const response = await fetch(`http://localhost:5000/api/stock-news?company=${company}`);
-        const data = await response.json();
-        setNews(data);
+      if(company=="") {
         setLoading(false);
-      } catch (err) {
-        setError('Error fetching news');
-        setLoading(false);
+      }else{
+        try {
+          // Send the company prop as a query parameter or include it in the URL
+          const response = await fetch(`http://localhost:5000/api/stock-news?company=${company}`);
+          const data = await response.json();
+          setNews(data);
+          setLoading(false);
+        } catch (err) {
+          setError('Error fetching news');
+          setLoading(false);
+        }
       }
     };
 

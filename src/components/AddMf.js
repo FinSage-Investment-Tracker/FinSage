@@ -58,7 +58,7 @@ const AddMf = () => {
     const handleAddMf = async (e) => {
         e.preventDefault();
 
-        const API_KEY = "67509a113de9e2.28909585"; // API key
+        const API_KEY = "67513154014743.32771947"; // API key
         const url = `https://eodhd.com/api/eod/${newMf.symbol}.nse?from=${newMf.date}&to=${newMf.date}&period=d&api_token=${API_KEY}&fmt=json`;
 
         try {

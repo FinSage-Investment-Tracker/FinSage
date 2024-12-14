@@ -98,7 +98,7 @@ function ChatBotWindow() {
       const response = await fetch(url, {
         method: 'GET',
         headers: {
-          'x-rapidapi-key': '', // Your RapidAPI key
+          'x-rapidapi-key': 'ea32c6c587mshef5aee7306de9bbp13723djsn2520fd5efba6', // Your RapidAPI key
           'x-rapidapi-host': 'indian_stock_price_and_fundamentals.p.rapidapi.com',
         },
       });

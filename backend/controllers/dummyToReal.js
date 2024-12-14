@@ -5,78 +5,94 @@ const StockHold = require("../models/Stock");
 
 const dummytoreal = async () => {
   try {
-    const data = await StockDummy.find();
-    if (data.length === 0) return;
+    const dummyData = await StockDummy.find();
+    if (dummyData.length === 0) {
+      console.log("No dummy data found.");
+      return;
+    }
 
     const stockTransactions = [];
-    for (const item of data) {
-      let symbol = item.symbol;
-      let data2 = [];
-      let length = 1;
 
+    for (const dummy of dummyData) {
+      let { symbol, portfolio } = dummy;
+      let possibleSymbols = [];
+      let prefixLength = 1;
+
+      // Resolve symbol
       while (true) {
-        data2 = await StockSymbols.find({
-          symbol: { $regex: `^${symbol.substring(0, length)}`, $options: "i" },
+        possibleSymbols = await StockSymbols.find({
+          symbol: { $regex: `^${symbol.substring(0, prefixLength)}`, $options: "i" },
         });
-        length++;
+        prefixLength++;
 
-        if (data2.length === 0) {
-          console.log("No more data");
+        if (possibleSymbols.length === 0) {
+          console.log(`No matching symbol for: ${symbol}`);
           break;
         }
 
-        if (data2.length === 1) {
-          const resolvedSymbol = data2[0].symbol;
-          const transactionItem = { ...item._doc }; // Clone item for stockTransactions
-          const stockHoldItem = { ...transactionItem }; // Clone item for StockHold
-          
+        if (possibleSymbols.length === 1) {
+          const resolvedSymbol = possibleSymbols[0].symbol;
 
-          transactionItem.symbol = resolvedSymbol;
-          stockHoldItem.symbol = resolvedSymbol;
-          console.log(stockHoldItem)
+          // Prepare transaction and stock hold items
+          const transactionItem = { ...dummy._doc, symbol: resolvedSymbol };
+          const stockHoldItem = { ...transactionItem, symbol: resolvedSymbol };
 
-          const existingStock = await StockHold.findOne({
-            symbol: stockHoldItem.symbol,
-          });
-          if (!existingStock) {
-            delete stockHoldItem.type; // Remove 'type' if stock is new
-            await StockHold.create(stockHoldItem);
-          } else {
-            if (stockHoldItem.type === "buy") {
+          // Retrieve all stocks matching the symbol
+          const existingStocks = await StockHold.find({ symbol: stockHoldItem.symbol });
 
-              // Calculate the new average price and quantity for buy
-              const newPrice =
+          // Initialize flag to track if a match is found
+          let matchFound = false;
+
+          // Check each stock for a portfolio match 
+          for (const existingStock of existingStocks) {
+            if (existingStock.portfolio.toString() === stockHoldItem.portfolio.toString()) {
+              // Match found, update stock
+              const updatedPrice =
                 (existingStock.price * existingStock.quantity +
                   stockHoldItem.price * stockHoldItem.quantity) /
                 (existingStock.quantity + stockHoldItem.quantity);
-              const newQuantity =
-                existingStock.quantity + stockHoldItem.quantity;
 
-              // Update existing stock in StockHold
+              const updatedQuantity = existingStock.quantity + stockHoldItem.quantity;
+
               await StockHold.updateOne(
                 { _id: existingStock._id },
-                { price: newPrice, quantity: newQuantity }
+                { price: updatedPrice, quantity: updatedQuantity }
               );
-            } 
+
+              console.log(
+                `Updated stock in portfolio ${existingStock.portfolio}: Quantity: ${updatedQuantity}, Price: ${updatedPrice}`
+              );
+
+              matchFound = true; // Flag as found
+              break;
+            }
           }
 
-          stockTransactions.push(transactionItem); // Add to transactions array
+          // If no match found, add new stock
+          if (!matchFound) {
+            delete stockHoldItem.type; // Remove 'type' for new entries
+            await StockHold.create(stockHoldItem);
+            console.log(`New stock added to portfolio ${stockHoldItem.portfolio}`);
+          }
+
+          // Add transaction for the stock
+          stockTransactions.push(transactionItem);
           break;
         }
       }
     }
 
+    // Batch insert stock transactions
     if (stockTransactions.length > 0) {
-
-      // Insert all stock transactions at once
       await StockTransaction.insertMany(stockTransactions);
       console.log("Stock transactions added successfully.");
     }
 
     // Clear StockDummy collection
-    // await StockDummy.deleteMany({});
+    await StockDummy.deleteMany({});
+    console.log("StockDummy collection cleared.");
   } catch (error) {
-    console.error("Error processing data:", error);
+    console.error("Error processing dummy-to-real transformation:", error);
   }
 };
 
